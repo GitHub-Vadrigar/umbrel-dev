@@ -1,5 +1,3 @@
-## Umbrel Community App Store
+## Umbrel development community app store
 
-First Umbrel app in development: Nerva.
-
-NERVA (XNV) is a privacy focused cryptocurrency built for secure transactions, private balances, and true financial fungibility. Using proven Cryptonote privacy technology, NERVA obscures sender, receiver, and transaction amounts on chain. This allows users to transact without exposing their financial history to the public.
+Do not use this store as it is for development purposes. Please use https://github.com/GitHub-Vadrigar/umbrelapps.Git 
