@@ -4,7 +4,7 @@ name: Nerva Node
 tagline: Run your own Nerva node
 icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/app/logo.png
 category: crypto
-version: "0.3.6"
+version: "0.3.7"
 port: 17578
 description: >-
   Run your own Nerva node. Monitor sync status, peers and blocks.
@@ -37,7 +37,8 @@ gallery:
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/2.png
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/3.png
 releaseNotes: >-
-  Initial release.
+    - Nerva Deamon updated to v0.2.1.0
+    - Login requirement added to dashboard
 dependencies: []
 path: ""
 defaultUsername: ""

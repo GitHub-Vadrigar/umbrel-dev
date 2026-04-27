@@ -117,18 +117,16 @@ async function updateOverview() {
 
   const r = data.result;
 
-  // 1. Update Header Status Badge
   if (badge) badge.className = "status-badge status-online";
   if (statusText) statusText.innerText = "Online";
   if (r.version) {
-	document.getElementById("coreVersion").innerText = "Nerva Daemon v" + r.version;
-	if (!window.updateCheckDone) {
-	  checkForUpdates(r.version);
-	  window.updateCheckDone = true;
-	}
+    document.getElementById("coreVersion").innerText = "Nerva Daemon v" + r.version;
+    if (!window.updateCheckDone) {
+      checkForUpdates(r.version);
+      window.updateCheckDone = true;
+    }
   }
 
-  // 2. Stats Grid
   const netHashrate = r.difficulty ? r.difficulty / 60 : 0;
   document.getElementById("netHash").innerText = formatHashrate(netHashrate);
   document.getElementById("dbSize").innerText = r.database_size ? formatBytes(r.database_size) : "-";
@@ -139,32 +137,45 @@ async function updateOverview() {
   document.getElementById("mempool").innerText = txPoolCount + (txPoolCount === 1 ? " TX" : " TXs");
   document.getElementById("mempoolTooltip").innerText = txPoolCount + " transactions in mempool";
 
-  // 3. Blockchain Card Sync Logic
   const actualHeight = r.height || 0;
-  let target = r.target_height > 0 ? r.target_height : actualHeight;
-  let percent = target > 0 ? (actualHeight / target) * 100 : 0;
-  
-  let tooltipText = actualHeight >= target ? `Net height: ${formatNumber(actualHeight)}` : `Height: ${formatNumber(actualHeight)} / ${formatNumber(target)}`;
-  let tooltipHTML = `<span class="tooltip-container">i<span class="tooltip-text">${tooltipText}</span></span>`;
+  const targetHeight = r.target_height || 0;
   
   const syncEl = document.getElementById("syncText");
-  if (actualHeight >= target && target > 0) {
-    syncEl.innerHTML = "100.00% synced " + tooltipHTML;
-    document.getElementById("progress").style.width = "100%";
-    document.getElementById("eta").innerText = "Synced";
-  } else {
-    syncEl.innerHTML = percent.toFixed(2) + "% synced " + tooltipHTML;
-    document.getElementById("progress").style.width = percent + "%";
+  const progressEl = document.getElementById("progress");
+  const etaEl = document.getElementById("eta");
+
+  if (targetHeight === 0 || (actualHeight === 0 && targetHeight === 0)) {
+    syncEl.innerHTML = "Connecting to network...";
+    progressEl.style.width = "0%";
+    etaEl.innerText = "Waiting for peers...";
+  } 
+  else if (actualHeight < targetHeight) {
+    let percent = ((actualHeight / targetHeight) * 100).toFixed(2);
+    let tooltipText = `Height: ${formatNumber(actualHeight)} / ${formatNumber(targetHeight)}`;
+    let tooltipHTML = `<span class="tooltip-container">i<span class="tooltip-text">${tooltipText}</span></span>`;
     
-    // ETA
+    syncEl.innerHTML = percent + "% synced " + tooltipHTML;
+    progressEl.style.width = percent + "%";
+    
     const now = Date.now();
     const deltaH = actualHeight - lastHeight;
     const deltaT = (now - lastTime) / 1000;
+    
     if (deltaH > 0) {
       const speed = deltaH / deltaT;
-      const remaining = target - actualHeight;
-      document.getElementById("eta").innerText = formatTime(Math.floor(remaining / speed));
+      const remaining = targetHeight - actualHeight;
+      etaEl.innerText = formatTime(Math.floor(remaining / speed));
+    } else {
+      etaEl.innerText = "Calculating ETA...";
     }
+  } 
+  else {
+    let tooltipText = `Net height: ${formatNumber(actualHeight)}`;
+    let tooltipHTML = `<span class="tooltip-container">i<span class="tooltip-text">${tooltipText}</span></span>`;
+    
+    syncEl.innerHTML = "100.00% synced " + tooltipHTML;
+    progressEl.style.width = "100%";
+    etaEl.innerText = "Synced";
   }
 
   if (actualHeight > lastHeight) {
@@ -172,7 +183,6 @@ async function updateOverview() {
     lastTime = Date.now();
   }
 
-  // 4. Update blockrow
   updateRecentBlocks(actualHeight);
 }
 
