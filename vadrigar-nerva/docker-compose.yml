@@ -19,7 +19,7 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "80:17578"
+      - "17578:80"
     volumes:
       - ${APP_DATA_DIR}/app:/usr/share/nginx/html:ro
       - ${APP_DATA_DIR}/nginx.conf:/etc/nginx/conf.d/default.conf:ro
