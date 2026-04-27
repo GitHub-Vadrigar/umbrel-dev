@@ -37,8 +37,7 @@ gallery:
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/2.png
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/3.png
 releaseNotes: >-
-    - Nerva Deamon updated to v0.2.1.0
-    - Login requirement added to dashboard
+    Nerva Deamon updated to v0.2.1.0 and sync height bugfix
 dependencies: []
 path: ""
 defaultUsername: ""
