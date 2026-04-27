@@ -13,13 +13,11 @@ services:
   app_proxy:
     environment:
       APP_HOST: vadrigar-nerva_web_1
-      APP_PORT: 17578
+      APP_PORT: "80:17578"
 
   web:
     image: nginx:alpine
     restart: unless-stopped
-    ports:
-      - 17578:80
     volumes:
       - ${APP_DATA_DIR}/app:/usr/share/nginx/html:ro
       - ${APP_DATA_DIR}/nginx.conf:/etc/nginx/conf.d/default.conf:ro
