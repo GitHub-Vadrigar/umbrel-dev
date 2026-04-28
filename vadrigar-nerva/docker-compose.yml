@@ -13,7 +13,7 @@ services:
   nervad:
     user: "1000:1000"
     restart: unless-stopped
-    command: --p2p-bind-ip=0.0.0.0 --p2p-bind-port=17565 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --non-interactive --confirm-external-bind --data-dir=/data/nerva --log-level 0
+    command: --p2p-bind-ip=0.0.0.0 --p2p-bind-port=17565 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --non-interactive --confirm-external-bind --data-dir=/data/nerva --quicksync /data/nerva/quicksync.raw --log-level 0
     image: sn1f3rt/nerva:v0.2.1.0
     depends_on:
       downloader:
