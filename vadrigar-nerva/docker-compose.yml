@@ -1,5 +1,6 @@
 services:
   downloader:
+    user: "1000:1000"
     image: alpine:latest
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
