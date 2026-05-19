@@ -219,15 +219,104 @@ async function updateRecentBlocks(currentHeight) {
 }
 
 // PEERS & MINING
+const ipCache = {};
+let currentSortColumn = 'address';
+let currentSortDirection = 'asc';
+
+function changeSort(column) {
+  if (currentSortColumn === column) {
+    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    currentSortColumn = column;
+    currentSortDirection = column === 'height' ? 'desc' : 'asc';
+  }
+  updateSortHeaders();
+  updatePeers();
+}
+
+function updateSortHeaders() {
+  const headers = {
+    address: document.getElementById('th-address'),
+    direction: document.getElementById('th-direction'),
+    height: document.getElementById('th-height')
+  };
+  
+  if (!headers.address || !headers.direction || !headers.height) return;
+
+  headers.address.innerText = 'Peer / IP';
+  headers.direction.innerText = 'Direction';
+  headers.height.innerText = 'Height';
+
+  const arrow = currentSortDirection === 'asc' ? ' ▲' : ' ▼';
+  headers[currentSortColumn].innerText += arrow;
+}
+
+async function getCountryFlag(ip) {
+  if (ip.endsWith('.onion') || ip.includes('.onion')) {
+    return `<span style="background: #7D4698; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; margin-right: 8px; vertical-align: middle;">TOR</span>`;
+  }
+  
+  if (ipCache[ip]) return ipCache[ip];
+  try {
+    const res = await fetch(`https://get.geojs.io/v1/ip/country/${ip}.json`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const countryCode = data.country.toLowerCase();
+    const flagHTML = `<img src="https://flagcdn.com/w20/${countryCode}.png" style="width: 20px; vertical-align: middle; margin-right: 8px; border-radius: 2px;" alt="${data.country}">`;
+    ipCache[ip] = flagHTML;
+    return flagHTML;
+  } catch {
+    const fallback = `<span style="display:inline-block; width:20px; margin-right:8px; text-align:center;">🏳️</span>`;
+    ipCache[ip] = fallback;
+    return fallback;
+  }
+}
+
 async function updatePeers() {
   const data = await rpc("get_connections");
   if (!data || !data.result || !data.result.connections) return;
 
-  let html = "";
-  data.result.connections.forEach(p => {
-    html += `<tr><td>${p.address}</td><td>${p.incoming ? "IN" : "OUT"}</td><td>${formatNumber(p.height)}</td></tr>`;
+  const connections = data.result.connections;
+  
+  const ipPromises = connections.map(async (p) => {
+    let cleanIp = p.address.split(':')[0];
+    if (cleanIp.startsWith('[')) {
+      cleanIp = cleanIp.substring(1, cleanIp.indexOf(']'));
+    }
+    const flag = await getCountryFlag(cleanIp);
+    return { ...p, flag };
   });
-  document.getElementById("peerTable").innerHTML = html || "<tr><td colspan='3'>No peers.</td></tr>";
+
+  const enrichedPeers = await Promise.all(ipPromises);
+
+  enrichedPeers.sort((a, b) => {
+    let valA, valB;
+
+    if (currentSortColumn === 'address') {
+      valA = a.address.toLowerCase();
+      valB = b.address.toLowerCase();
+    } else if (currentSortColumn === 'direction') {
+      valA = a.incoming ? 'in' : 'out';
+      valB = b.incoming ? 'in' : 'out';
+    } else if (currentSortColumn === 'height') {
+      valA = a.height || 0;
+      valB = b.height || 0;
+    }
+
+    if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
+    if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  let html = "";
+  enrichedPeers.forEach(p => {
+    html += `<tr><td>${p.flag}${p.address}</td><td>${p.incoming ? "IN" : "OUT"}</td><td>${formatNumber(p.height)}</td></tr>`;
+  });
+  
+  const tableBody = document.getElementById("peerTable");
+  if (tableBody) {
+    tableBody.innerHTML = html || "<tr><td colspan='3'>No peers.</td></tr>";
+  }
 }
 
 async function updateMiningStatus() {
@@ -257,6 +346,26 @@ async function startMining() {
 async function stopMining() {
   await rpcDirect("/stop_mining");
   updateMiningStatus();
+}
+
+// SETTINGS
+async function toggleTorSettings(enable) {
+  try {
+    const res = await fetch("/api/toggle-tor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enableTor: enable })
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      alert("Tor settings changed! Node is restarting.");
+      setTimeout(() => location.reload(), 5000);
+    }
+  } catch (error) {
+    console.error("Error changing Tor settings", error);
+    document.getElementById("torToggle").checked = !enable;
+  }
 }
 
 // INIT

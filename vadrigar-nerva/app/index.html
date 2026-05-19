@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Nerva Node</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css?v=0.3.7">
+  <link rel="stylesheet" href="style.css?v=0.3.8a">
 </head>
 <body>
 
@@ -74,13 +74,13 @@
         <h2>Peers</h2>
         <div class="table-responsive">
           <table>
-            <thead>
-              <tr>
-                <th>IP</th>
-                <th>Direction</th>
-                <th>Height</th>
-              </tr>
-            </thead>
+			<thead>
+				<tr>
+				  <th id="th-address" onclick="changeSort('address')" style="cursor: pointer;">Peer / IP ▲</th>
+				  <th id="th-direction" onclick="changeSort('direction')" style="cursor: pointer;">Direction</th>
+				  <th id="th-height" onclick="changeSort('height')" style="cursor: pointer;">Height</th>
+				</tr>
+			  </thead>
             <tbody id="peerTable"></tbody>
           </table>
         </div>
@@ -125,12 +125,16 @@
           <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 18px; font-weight: bold;">Loading...</span></p>
         </div>
       </div>
+	  <div class="tor-toggle-container">
+		<label>Outbound Tor Verbindingen</label>
+		<input type="checkbox" id="torToggle" onchange="toggleTorSettings(this.checked)">
+	  </div>
     </div>
 
   </div>
 </div>
 
-<script src="script.js?v=0.3.7"></script>
+<script src="script.js?v=0.3.8a"></script>
 
 </body>
 </html>

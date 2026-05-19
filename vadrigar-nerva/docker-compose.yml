@@ -1,13 +1,49 @@
 services:
   downloader:
     user: "1000:1000"
-    image: alpine:latest
+    image: alpine:3.19.1
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
     command: >
       sh -c "
-      wget -O /data/nerva/p2pstate.nerva.v11.bin https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/p2pstate.nerva.v11.bin;
-      wget -O /data/nerva/quicksync.raw https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/quicksync.raw;
+      cd /data/nerva
+      wget -qO hashes.txt https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/hashes.txt
+
+      check_and_download() {
+        FILE=\$$1
+        URL=\$$2
+        
+        # Looking for expected hash in file
+        EXPECTED_HASH=\$(grep \$FILE hashes.txt | awk '{print \$1}')
+        
+        if [ -f \"\$FILE\" ]; then
+          LOCAL_HASH=\$(sha256sum \$FILE | awk '{print \$1}')
+          if [ \"\$LOCAL_HASH\" != \"\$EXPECTED_HASH\" ]; then
+            echo \"Update found or corruption in \$FILE. Removing...\"
+            rm \$FILE
+          else
+            echo \"\$FILE is up-to-date.\"
+            return 0
+          fi
+        fi
+        
+        echo \"Downloading \$FILE...\"
+        wget -qO \$FILE \$URL
+        
+        # Hash check after download
+        LOCAL_HASH=\$(sha256sum \$FILE | awk '{print \$1}')
+        if [ \"\$LOCAL_HASH\" != \"\$EXPECTED_HASH\" ]; then
+          echo \"FAULT: Hash is not matching for \$FILE. File is deleted.\"
+          rm \$FILE
+        else
+          echo \"Succes: \$FILE verified.\"
+        fi
+      }
+
+      check_and_download 'quicksync.raw' 'https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/quicksync.raw'
+      check_and_download 'p2pstate.nerva.v11.bin' 'https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/p2pstate.nerva.v11.bin'
+      
+      exit 0
       "
   
   nervad:
@@ -30,10 +66,19 @@ services:
       APP_PORT: 80
 
   web:
-    image: nginx:alpine
+    image: nginx:1.24.0-alpine
     restart: unless-stopped
     volumes:
       - ${APP_DATA_DIR}/app:/usr/share/nginx/html:ro
       - ${APP_DATA_DIR}/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - nervad
+  api:
+    image: node:18.19.0-alpine
+    user: "root"
+    working_dir: /app
+    volumes:
+      - ${APP_DATA_DIR}/api:/app
+      - ${APP_DATA_DIR}/data/nerva:/data/nerva
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: sh -c "npm install express && node server.js"
