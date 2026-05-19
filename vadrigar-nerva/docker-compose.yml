@@ -5,7 +5,7 @@ services:
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
       - ${APP_DATA_DIR}/download.sh:/download.sh
-    command: /download.sh
+    command: sh /download.sh
   
   nervad:
     user: "1000:1000"
@@ -20,7 +20,7 @@ services:
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
       - ${APP_DATA_DIR}/start.sh:/start.sh:ro
-    command: /start.sh
+    command: sh /start.sh
 
   app_proxy:
     environment:
