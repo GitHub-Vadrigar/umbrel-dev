@@ -24,8 +24,7 @@ services:
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
       - ${APP_DATA_DIR}/start.sh:/start.sh:ro
-    command: 
-      - /start.sh
+    entrypoint: ["/bin/sh", "/start.sh"]
 
   app_proxy:
     environment:
