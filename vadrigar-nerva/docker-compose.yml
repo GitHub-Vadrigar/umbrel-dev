@@ -4,52 +4,12 @@ services:
     image: alpine:3.19.1
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
-    command: >
-      sh -c "
-      cd /data/nerva
-      wget -qO hashes.txt https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/hashes.txt
-
-      check_and_download() {
-        FILE=\$$1
-        URL=\$$2
-        
-        # Looking for expected hash in file
-        EXPECTED_HASH=\$(grep \$FILE hashes.txt | awk '{print \$1}')
-        
-        if [ -f \"\$FILE\" ]; then
-          LOCAL_HASH=\$(sha256sum \$FILE | awk '{print \$1}')
-          if [ \"\$LOCAL_HASH\" != \"\$EXPECTED_HASH\" ]; then
-            echo \"Update found or corruption in \$FILE. Removing...\"
-            rm \$FILE
-          else
-            echo \"\$FILE is up-to-date.\"
-            return 0
-          fi
-        fi
-        
-        echo \"Downloading \$FILE...\"
-        wget -qO \$FILE \$URL
-        
-        # Hash check after download
-        LOCAL_HASH=\$(sha256sum \$FILE | awk '{print \$1}')
-        if [ \"\$LOCAL_HASH\" != \"\$EXPECTED_HASH\" ]; then
-          echo \"FAULT: Hash is not matching for \$FILE. File is deleted.\"
-          rm \$FILE
-        else
-          echo \"Succes: \$FILE verified.\"
-        fi
-      }
-
-      check_and_download 'quicksync.raw' 'https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/quicksync.raw'
-      check_and_download 'p2pstate.nerva.v11.bin' 'https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/p2pstate.nerva.v11.bin'
-      
-      exit 0
-      "
+      - ${APP_DATA_DIR}/download.sh:/download.sh
+    command: /download.sh
   
   nervad:
     user: "1000:1000"
     restart: unless-stopped
-    command: --p2p-bind-ip=0.0.0.0 --p2p-bind-port=17565 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --non-interactive --confirm-external-bind --data-dir=/data/nerva --quicksync /data/nerva/quicksync.raw --log-level 0
     image: sn1f3rt/nerva:v0.2.1.0
     depends_on:
       downloader:
@@ -59,6 +19,8 @@ services:
       - "17566:17566"
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
+      - ${APP_DATA_DIR}/start.sh:/start.sh:ro
+    command: /start.sh
 
   app_proxy:
     environment:
