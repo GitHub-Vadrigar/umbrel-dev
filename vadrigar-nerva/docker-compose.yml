@@ -5,8 +5,11 @@ services:
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
       - ${APP_DATA_DIR}/download.sh:/download.sh
-    command: 
-      - download.sh
+    command: >
+      sh -c "
+      wget -O /data/nerva/p2pstate.nerva.v11.bin https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/p2pstate.nerva.v11.bin;
+      wget -O /data/nerva/quicksync.raw https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/quicksync.raw;
+      "
   
   nervad:
     user: "1000:1000"
