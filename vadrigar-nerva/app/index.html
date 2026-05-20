@@ -116,21 +116,67 @@
       </div>
     </div>
 
-    <div id="settingsTab" class="tab">
-      <div class="card">
-        <h2>Connection Details</h2>
-        <p>Copy and paste the line below into your <strong>Nerva One</strong> wallet to connect to your node.</p>
-
-        <div class="info-box">
-          <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 18px; font-weight: bold;">Loading...</span></p>
-        </div>
-      </div>
-	  <div class="tor-toggle-container">
-		<label>Outbound Tor Verbindingen</label>
-		<input type="checkbox" id="torToggle" onchange="toggleTorSettings(this.checked)">
+	<div id="settingsTab" class="tab">
+	  <div class="card">
+		<h2>Connection Details</h2>
+		<p>Copy and paste the line below into your <strong>Nerva One</strong> wallet to connect to your node.</p>
+		<div class="info-box">
+		  <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 18px; font-weight: bold;">Loading...</span></p>
+		</div>
 	  </div>
-    </div>
 
+	  <div class="card">
+		<h2>Network & Privacy</h2>
+		<form id="settingsForm">
+		  
+		  <div class="checkbox-group">
+			<input type="checkbox" id="torTxProxy" name="torTxProxy">
+			<label for="torTxProxy">Broadcast transactions via Tor (Privacy Mode)</label>
+		  </div>
+
+		  <div class="checkbox-group">
+			<input type="checkbox" id="padTransactions" name="padTransactions">
+			<label for="padTransactions">Pad Transactions (Defend against volume analysis)</label>
+		  </div>
+
+		  <div class="checkbox-group">
+			<input type="checkbox" id="pruneBlockchain" name="pruneBlockchain">
+			<label for="pruneBlockchain">Prune Blockchain (Save disk space)</label>
+		  </div>
+
+		  <h3>Bandwidth Limits</h3>
+		  <div class="form-row">
+			<div class="input-group">
+			  <label for="limitUp">Upload Limit (kB/s):</label>
+			  <input type="number" id="limitUp" name="limitUp" class="text-input" value="2048">
+			</div>
+			<div class="input-group">
+			  <label for="limitDown">Download Limit (kB/s):</label>
+			  <input type="number" id="limitDown" name="limitDown" class="text-input" value="8192">
+			</div>
+		  </div>
+
+		  <h2>RPC Access</h2>
+		  <div class="checkbox-group">
+			<input type="checkbox" id="publicRpc" name="publicRpc">
+			<label for="publicRpc">Enable Public Node / External RPC</label>
+		  </div>
+
+		  <div class="form-row">
+			<div class="input-group">
+			  <label for="rpcUser">RPC Username (Optional):</label>
+			  <input type="text" id="rpcUser" name="rpcUser" class="text-input" placeholder="admin">
+			</div>
+			<div class="input-group">
+			  <label for="rpcPass">RPC Password (Optional):</label>
+			  <input type="password" id="rpcPass" name="rpcPass" class="text-input" placeholder="••••••••">
+			</div>
+		  </div>
+
+		  <button type="submit" class="btn-primary" style="margin-top: 15px; width: 100%;">Save and Restart Daemon</button>
+		</form>
+	  </div>
+	</div>
   </div>
 </div>
 

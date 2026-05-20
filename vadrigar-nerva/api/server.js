@@ -1,25 +1,62 @@
 const express = require('express');
 const fs = require('fs');
-const { exec } = require('child_process');
+const http = require('http');
 
 const app = express();
 app.use(express.json());
 
-const flagPath = '/data/nerva/tor_enabled.flag';
+const CONFIG_PATH = '/data/nerva/settings.conf';
+const DOCKER_SOCKET = '/var/run/docker.sock';
+const TARGET_CONTAINER = 'vadrigar-nerva_nervad_1';
 
-app.post('/toggle-tor', (req, res) => {
-  const { enableTor } = req.body;
+app.get('/api/settings', (req, res) => {
+    if (!fs.existsSync(CONFIG_PATH)) {
+        return res.json({});
+    }
 
-  if (enableTor) {
-    fs.writeFileSync(flagPath, '1');
-  } else {
-    if (fs.existsSync(flagPath)) fs.unlinkSync(flagPath);
-  }
+    const content = fs.readFileSync(CONFIG_PATH, 'utf8');
+    const lines = content.split('\n');
+    const config = {};
 
-  exec("docker restart $(docker ps -q -f name=nervad)", (error) => {
-    if (error) return res.status(500).json({ success: false });
-    res.json({ success: true });
-  });
+    lines.forEach(line => {
+        const match = line.match(/^([^=]+)="([^"]*)"/);
+        if (match) {
+            config[match[1]] = match[2];
+        }
+    });
+
+    res.json(config);
 });
 
-app.listen(3000);
+app.post('/api/settings', (req, res) => {
+    const body = req.body;
+    let content = '';
+
+    for (const [key, value] of Object.entries(body)) {
+        content += `${key}="${value}"\n`;
+    }
+
+    fs.writeFileSync(CONFIG_PATH, content, 'utf8');
+
+    const dockerRequest = http.request({
+        socketPath: DOCKER_SOCKET,
+        path: `/containers/${TARGET_CONTAINER}/restart`,
+        method: 'POST'
+    }, (dockerRes) => {
+        if (dockerRes.statusCode === 204) {
+            res.sendStatus(200);
+        } else {
+            res.sendStatus(500);
+        }
+    });
+
+    dockerRequest.on('error', () => {
+        res.sendStatus(500);
+    });
+
+    dockerRequest.end();
+});
+
+app.listen(3000, () => {
+    console.log('API listening on port 3000');
+});

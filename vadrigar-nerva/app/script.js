@@ -348,23 +348,52 @@ async function stopMining() {
   updateMiningStatus();
 }
 
-// SETTINGS
-async function toggleTorSettings(enable) {
+async function loadSettings() {
   try {
-    const res = await fetch("/api/toggle-tor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ enableTor: enable })
+    const res = await fetch('/api/settings');
+    const data = await res.json();
+    
+    if(document.getElementById('torTxProxy')) document.getElementById('torTxProxy').checked = data.TOR_TX_PROXY === "true";
+    if(document.getElementById('padTransactions')) document.getElementById('padTransactions').checked = data.PAD_TRANSACTIONS === "true";
+    if(document.getElementById('pruneBlockchain')) document.getElementById('pruneBlockchain').checked = data.PRUNE_BLOCKCHAIN === "true";
+    
+    if(document.getElementById('limitUp')) document.getElementById('limitUp').value = data.LIMIT_UP || 2048;
+    if(document.getElementById('limitDown')) document.getElementById('limitDown').value = data.LIMIT_DOWN || 8192;
+
+    if(document.getElementById('publicRpc')) document.getElementById('publicRpc').checked = data.PUBLIC_RPC === "true";
+    if(document.getElementById('rpcUser')) document.getElementById('rpcUser').value = data.RPC_USER || "";
+    if(document.getElementById('rpcPass')) document.getElementById('rpcPass').value = data.RPC_PASS || "";
+  } catch (e) {}
+}
+
+async function saveSettings(e) {
+  e.preventDefault();
+  
+  const payload = {
+    TOR_TX_PROXY: document.getElementById('torTxProxy') ? document.getElementById('torTxProxy').checked : false,
+    PAD_TRANSACTIONS: document.getElementById('padTransactions') ? document.getElementById('padTransactions').checked : false,
+    PRUNE_BLOCKCHAIN: document.getElementById('pruneBlockchain') ? document.getElementById('pruneBlockchain').checked : false,
+    LIMIT_UP: document.getElementById('limitUp') ? parseInt(document.getElementById('limitUp').value, 10) : 2048,
+    LIMIT_DOWN: document.getElementById('limitDown') ? parseInt(document.getElementById('limitDown').value, 10) : 8192,
+    PUBLIC_RPC: document.getElementById('publicRpc') ? document.getElementById('publicRpc').checked : false,
+    RPC_USER: document.getElementById('rpcUser') ? document.getElementById('rpcUser').value : "",
+    RPC_PASS: document.getElementById('rpcPass') ? document.getElementById('rpcPass').value : ""
+  };
+
+  try {
+    const res = await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
     
-    const data = await res.json();
-    if (data.success) {
-      alert("Tor settings changed! Node is restarting.");
-      setTimeout(() => location.reload(), 5000);
+    if (res.ok) {
+      alert("Settings saved successfully. The daemon is restarting...");
+    } else {
+      alert("Error saving settings.");
     }
-  } catch (error) {
-    console.error("Error changing Tor settings", error);
-    document.getElementById("torToggle").checked = !enable;
+  } catch {
+    alert("Network error saving settings.");
   }
 }
 
@@ -372,10 +401,20 @@ async function toggleTorSettings(enable) {
 function initializeSettings() {
   const host = window.location.hostname;
   const nodeDisp = document.getElementById("nodeIpDisplay");
-  if (nodeDisp) nodeDisp.innerText = `${host}:17566`;
+  if (nodeDisp) nodeDisp.innerText = `http://${host}:17566`;
 
   const savedWallet = localStorage.getItem("nerva_wallet");
-  if (savedWallet) document.getElementById("mineAddress").value = savedWallet;
+  if (savedWallet) {
+    const addrInput = document.getElementById("mineAddress");
+    if(addrInput) addrInput.value = savedWallet;
+  }
+  
+  loadSettings();
+  
+  const settingsForm = document.getElementById('settingsForm');
+  if (settingsForm) {
+    settingsForm.addEventListener('submit', saveSettings);
+  }
 }
 
 async function pollData() {

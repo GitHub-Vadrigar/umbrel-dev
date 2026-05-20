@@ -321,6 +321,8 @@ th { color: #8b949e; font-weight: normal; }
 .input-group {
   margin-bottom: 15px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .input-group label {
@@ -355,6 +357,36 @@ th { color: #8b949e; font-weight: normal; }
   margin-top: 20px;
   width: 100%;
   box-sizing: border-box;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .input-group {
+  flex: 1;
+}
+
+.checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  margin-bottom: 0;
+  cursor: pointer;
+  color: #e6edf3;
+  font-size: 14px;
 }
 
 /* =========================================
@@ -457,5 +489,10 @@ button.btn-danger:hover { background: #f85149; }
   
   .status-card {
     grid-column: span 1;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
   }
 }
