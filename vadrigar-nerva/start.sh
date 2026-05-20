@@ -50,4 +50,4 @@ echo "Setting bandwidth limits..."
 DAEMON_ARGS="$DAEMON_ARGS --limit-rate-up $LIMIT_UP --limit-rate-down $LIMIT_DOWN"
 
 echo "Launching nervad..."
-exec ./nervad $DAEMON_ARGS
+exec nervad $DAEMON_ARGS
