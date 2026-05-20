@@ -20,7 +20,7 @@ fi
 
 . ./"$SETTINGS_FILE"
 
-DAEMON_ARGS="--non-interactive --data-dir=/data/nerva --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --confirm-external-bind --no-igd --log-level 3"
+DAEMON_ARGS="--non-interactive --data-dir=/data/nerva --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --confirm-external-bind --no-igd --log-level 0"
 
 if [ "$PUBLIC_RPC" = "true" ]; then
     echo "Activating public RPC and node advertising..."
