@@ -20,11 +20,11 @@ fi
 
 . ./"$SETTINGS_FILE"
 
-DAEMON_ARGS="--non-interactive --data-dir=/data/nerva --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --no-igd"
+DAEMON_ARGS="--non-interactive --data-dir=/data/nerva --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --confirm-external-bind --no-igd --log-level 3"
 
 if [ "$PUBLIC_RPC" = "true" ]; then
     echo "Activating public RPC and node advertising..."
-    DAEMON_ARGS="$DAEMON_ARGS --confirm-external-bind --restricted-rpc --public-node"
+    DAEMON_ARGS="$DAEMON_ARGS --restricted-rpc --public-node"
     if [ -n "$RPC_USER" ] && [ -n "$RPC_PASS" ]; then
         echo "Applying RPC credentials..."
         DAEMON_ARGS="$DAEMON_ARGS --rpc-login $RPC_USER:$RPC_PASS"
