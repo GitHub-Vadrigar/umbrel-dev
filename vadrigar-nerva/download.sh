@@ -1,8 +1,7 @@
 #!/bin/sh
 set -u
 
-apk add gpg
-apk add unzip
+apk update && apk add --no-cache gnupg unzip wget coreutils || exit 1
 
 cd /data/nerva || exit 1
 
@@ -73,6 +72,8 @@ check_and_download() {
 
 check_and_download 'quicksync.raw' "${BASE_URL}/quicksync.raw" 'false' || exit 1
 check_and_download 'p2pstate.nerva.v11.bin' "${BASE_URL}/p2pstate.nerva.v11.bin" 'true' || exit 1
+
+chown -R 1000:1000 /data/nerva
 
 echo "All downloads and verifications completed successfully."
 exit 0
