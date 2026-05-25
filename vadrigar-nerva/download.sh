@@ -5,6 +5,9 @@ apk update && apk add --no-cache gnupg unzip wget coreutils || exit 1
 
 cd /data/nerva || exit 1
 
+export GNUPGHOME=$(mktemp -d)
+chmod 700 "$GNUPGHOME"
+
 NERVA_VERSION="v0.2.2.0-rc2"
 BASE_URL="https://github.com/nerva-project/nerva/releases/download/${NERVA_VERSION}"
 GPG_KEY_URL="https://raw.githubusercontent.com/nerva-project/nerva/master/gpg_keys/sn1f3rt.asc"
@@ -16,9 +19,9 @@ wget -nv -O signatures.zip "${BASE_URL}/signatures-${NERVA_VERSION}.zip" || exit
 
 echo "Importing GPG-key and and extracting signature..."
 gpg --import sn1f3rt.asc || exit 1
-unzip -j -o signatures.zip hashes.txt.asc || exit 1
+unzip -j -o signatures.zip || exit 1
 
-echo "Validating hashes.txt..."
+echo "Verify hashes.txt..."
 if ! gpg --verify hashes.txt.asc hashes.txt; then
   echo "ERROR: GPG verification of hashes.txt failed!"
   exit 1
@@ -26,6 +29,7 @@ fi
 echo "Succes: hashes.txt is safe and verified."
 
 rm sn1f3rt.asc signatures.zip hashes.txt.asc
+rm -rf "$GNUPGHOME"
 
 echo "Check hash and download..."
 check_and_download() {
