@@ -4,7 +4,7 @@ name: Nerva Node
 tagline: Run your own Nerva node
 icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/app/logo-u.png
 category: crypto
-version: "0.3.8a12"
+version: "0.3.8a14"
 port: 17578
 description: >-
   Run your own Nerva node. Monitor sync status, peers and blocks.
@@ -15,17 +15,16 @@ description: >-
   
   Features:
     - Dashboard for node, sync, peer and block stats.
-    - Connect the NervaOne desktop wallet to your synced node.
+    - Connect the NervaOne desktop/mobile wallet to your synced node.
     - Solo mine directly from your Umbrel server to earn XNV and to support the network.
-    - Outgoing connections to Tor Peers integrated
   
   Notes:
     - Mining is very CPU intensive for your Umbrel server, take caution using this function.
     - Node sync can be slow on small or busy systems. SSD is recommended.
   
   Components:
-    - Official Nerva Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva (v0.2.1.0)
-    - Docker official images used: alpine, nginx and node
+    - Official Nerva Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva
+    - Docker official image: nginx
 
 developer: GitHub-Vadrigar
 website: https://nerva.one
@@ -38,7 +37,7 @@ gallery:
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/2.png
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/3.png
 releaseNotes: >-
-    Outgoing connections to Tor peers added and available to switch on/off under the settings tab. Country flags and sorting added to the peers list. Improved security by adding hash check to the quicksync and p2p files.
+    Nerva Deamon updated to v0.2.2.0. Added hash check on downloaded quicksync and p2pstate files for improved security.
 dependencies: []
 path: ""
 defaultUsername: ""
