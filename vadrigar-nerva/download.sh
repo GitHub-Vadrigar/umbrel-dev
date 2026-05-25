@@ -1,6 +1,9 @@
 #!/bin/sh
 set -u
 
+apk add gpg
+apk add unzip
+
 cd /data/nerva || exit 1
 
 NERVA_VERSION="v0.2.2.0-rc2"
