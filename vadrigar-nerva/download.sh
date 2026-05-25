@@ -16,7 +16,7 @@ wget -nv -O signatures.zip "${BASE_URL}/signatures-${NERVA_VERSION}.zip" || exit
 
 echo "Importing GPG-key and and extracting signature..."
 gpg --import sn1f3rt.asc || exit 1
-unzip -o signatures.zip hashes.txt.asc || exit 1
+unzip -j -o signatures.zip hashes.txt.asc || exit 1
 
 echo "Validating hashes.txt..."
 if ! gpg --verify hashes.txt.asc hashes.txt; then
