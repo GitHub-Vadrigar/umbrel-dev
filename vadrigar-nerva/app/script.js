@@ -44,15 +44,43 @@ async function checkForUpdates(currentVersion) {
     const res = await fetch("https://api.github.com/repos/nerva-project/nerva/releases/latest");
     if (!res.ok) return;
     const data = await res.json();
+    
     const latestVersion = data.tag_name.replace(/[vV]/g, '');
     const cleanCurrent = currentVersion.replace(/[vV]/g, '');
 
-    if (cleanCurrent !== latestVersion && !cleanCurrent.startsWith(latestVersion)) {
-      const icon = document.getElementById("updateIcon");
-      const text = document.getElementById("updateTooltipText");
-      if (icon && text) {
+    if (cleanCurrent === latestVersion) return;
+
+    const currBase = cleanCurrent.split('-')[0];
+    const latBase = latestVersion.split('-')[0];
+    
+    const currParts = currBase.split('.').map(Number);
+    const latParts = latBase.split('.').map(Number);
+    const len = Math.max(currParts.length, latParts.length);
+    
+    let isNewer = false;
+    let isOlder = false;
+
+    for (let i = 0; i < len; i++) {
+      const c = currParts[i] || 0;
+      const l = latParts[i] || 0;
+      if (c > l) { isNewer = true; break; }
+      if (c < l) { isOlder = true; break; }
+    }
+
+    if (!isNewer && !isOlder && cleanCurrent.includes('-')) {
+      isNewer = true;
+    }
+
+    const icon = document.getElementById("updateIcon");
+    const text = document.getElementById("updateTooltipText");
+
+    if (icon && text) {
+      if (isOlder) {
         icon.style.display = "inline-block";
-        text.innerText = `New Nerva Deamon version available: v${latestVersion}. This update will be included in the next app release.`;
+        text.innerText = `New Nerva Daemon version available: v${latestVersion}. This update will be included in the next app release.`;
+      } else if (isNewer) {
+        icon.style.display = "inline-block";
+        text.innerText = `Notice: You are running v${cleanCurrent}. This is higher than the latest official release (v${latestVersion}), likely a Beta or Release Candidate.`;
       }
     }
   } catch (e) {
@@ -77,7 +105,27 @@ function timeAgo(timestamp) {
   if (minutes < 60) return `${minutes}m ago`;
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
+  
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  
+  if (days < 365) {
+    const months = Math.floor(days / 30.42);
+    const remainingDays = Math.floor(days % 30.42);
+    if (remainingDays === 0) return `${months}mo ago`;
+    return `${months}mo ${remainingDays}d ago`;
+  }
+  
+  const years = Math.floor(days / 365.25);
+  const remainingDaysAfterYears = days % 365.25;
+  const months = Math.floor(remainingDaysAfterYears / 30.42);
+  const remainingDays = Math.floor(remainingDaysAfterYears % 30.42);
+  
+  let parts = [`${years}y`];
+  if (months > 0) parts.push(`${months}mo`);
+  if (remainingDays > 0) parts.push(`${remainingDays}d`);
+  
+  return parts.join(" ") + " ago";
 }
 
 function formatBytes(bytes) {
@@ -119,6 +167,7 @@ async function updateOverview() {
 
   if (badge) badge.className = "status-badge status-online";
   if (statusText) statusText.innerText = "Online";
+  
   if (r.version) {
     document.getElementById("coreVersion").innerText = "Nerva Daemon v" + r.version;
     if (!window.updateCheckDone) {
@@ -127,50 +176,93 @@ async function updateOverview() {
     }
   }
 
-  const netHashrate = r.difficulty ? r.difficulty / 60 : 0;
-  document.getElementById("netHash").innerText = formatHashrate(netHashrate);
+  const totalPeers = (r.incoming_connections_count || 0) + (r.outgoing_connections_count || 0);
+  document.getElementById("peerCount").innerText = totalPeers;
   document.getElementById("dbSize").innerText = r.database_size ? formatBytes(r.database_size) : "-";
-  document.getElementById("peerCount").innerText = (r.incoming_connections_count || 0) + (r.outgoing_connections_count || 0);
-  document.getElementById("difficulty").innerText = formatNumber(r.difficulty || 0);
-  
-  const txPoolCount = r.tx_pool_size || 0;
-  document.getElementById("mempool").innerText = txPoolCount + (txPoolCount === 1 ? " TX" : " TXs");
-  document.getElementById("mempoolTooltip").innerText = txPoolCount + " transactions in mempool";
 
   const actualHeight = r.height || 0;
   let targetHeight = r.target_height || 0;
-  
+
   if (targetHeight === 0 && actualHeight > 0) {
     targetHeight = actualHeight;
   }
+
+  if (lastHeight === 0 && actualHeight > 0) {
+    lastHeight = actualHeight;
+    lastTime = Date.now();
+  }
+
+  const isActivelySyncing = (actualHeight > lastHeight);
+  const blocksBehind = Math.max(0, targetHeight - actualHeight);
   
+  const isDisconnected = totalPeers === 0;
+  const isCatchingUp = blocksBehind > 5 || (actualHeight <= 1 && isActivelySyncing);
+
+  const elHash = document.getElementById("netHash");
+  const elDiff = document.getElementById("difficulty");
+  const elMempool = document.getElementById("mempool");
+  const elMempoolTooltip = document.getElementById("mempoolTooltip");
+
+  if (isDisconnected) {
+    elHash.innerText = "-";
+    elDiff.innerText = "-";
+    elMempool.innerText = "-";
+    if (elMempoolTooltip) elMempoolTooltip.innerText = "Waiting for peers...";
+  } else if (isCatchingUp) {
+    elHash.innerText = "Syncing...";
+    elDiff.innerText = "Syncing...";
+    elMempool.innerText = "Syncing...";
+    if (elMempoolTooltip) elMempoolTooltip.innerText = "Mempool unavailable during bulk sync";
+  } else {
+    const netHashrate = r.difficulty ? r.difficulty / 60 : 0;
+    elHash.innerText = formatHashrate(netHashrate);
+    elDiff.innerText = formatNumber(r.difficulty || 0);
+    
+    const txPoolCount = r.tx_pool_size || 0;
+    elMempool.innerText = txPoolCount + (txPoolCount === 1 ? " TX" : " TXs");
+    if (elMempoolTooltip) elMempoolTooltip.innerText = txPoolCount + " transactions in mempool";
+  }
+
   const syncEl = document.getElementById("syncText");
   const progressEl = document.getElementById("progress");
   const etaEl = document.getElementById("eta");
 
-  if (targetHeight === 0 || (actualHeight === 0 && targetHeight === 0)) {
+  if (isDisconnected) {
     syncEl.innerHTML = "Connecting to network...";
     progressEl.style.width = "0%";
     etaEl.innerText = "Waiting for peers...";
   } 
-  else if (actualHeight < targetHeight) {
-    let percent = ((actualHeight / targetHeight) * 100).toFixed(2);
-    let tooltipText = `Height: ${formatNumber(actualHeight)} / ${formatNumber(targetHeight)}`;
-    let tooltipHTML = `<span class="tooltip-container">i<span class="tooltip-text">${tooltipText}</span></span>`;
+  else if (actualHeight <= 1 && !isActivelySyncing) {
+    syncEl.innerHTML = "Connecting to network...";
+    progressEl.style.width = "0%";
+    etaEl.innerText = "Discovering peers...";
+  } 
+  else if (isCatchingUp) {
+    let displayTarget = Math.max(actualHeight, targetHeight);
     
-    syncEl.innerHTML = percent + "% synced " + tooltipHTML;
-    progressEl.style.width = percent + "%";
-    
-    const now = Date.now();
-    const deltaH = actualHeight - lastHeight;
-    const deltaT = (now - lastTime) / 1000;
-    
-    if (deltaH > 0) {
-      const speed = deltaH / deltaT;
-      const remaining = targetHeight - actualHeight;
-      etaEl.innerText = formatTime(Math.floor(remaining / speed));
+    if (displayTarget === actualHeight) {
+      syncEl.innerHTML = `Syncing... (Block ${formatNumber(actualHeight)})`;
+      progressEl.style.width = "100%"; 
+      etaEl.innerText = "Waiting for network target...";
     } else {
-      etaEl.innerText = "Calculating ETA...";
+      let percent = ((actualHeight / displayTarget) * 100).toFixed(2);
+      let tooltipText = `Height: ${formatNumber(actualHeight)} / ${formatNumber(displayTarget)}`;
+      let tooltipHTML = `<span class="tooltip-container">i<span class="tooltip-text">${tooltipText}</span></span>`;
+      
+      syncEl.innerHTML = percent + "% synced " + tooltipHTML;
+      progressEl.style.width = percent + "%";
+      
+      const now = Date.now();
+      const deltaH = actualHeight - lastHeight;
+      const deltaT = (now - lastTime) / 1000;
+      
+      if (deltaH > 0 && deltaT > 0) {
+        const speed = deltaH / deltaT;
+        const remaining = displayTarget - actualHeight;
+        etaEl.innerText = formatTime(Math.floor(remaining / speed));
+      } else {
+        etaEl.innerText = "Calculating ETA...";
+      }
     }
   } 
   else {
