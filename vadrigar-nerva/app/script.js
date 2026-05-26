@@ -203,16 +203,24 @@ async function updateOverview() {
   const elMempool = document.getElementById("mempool");
   const elMempoolTooltip = document.getElementById("mempoolTooltip");
 
+  const hashHeader = elHash ? elHash.previousElementSibling : null;
+  const diffHeader = elDiff ? elDiff.previousElementSibling : null;
+  const syncTooltipHTML = `<span class="tooltip-container">i<span class="tooltip-text">Unavailable during bulk sync</span></span>`;
+
   if (isDisconnected) {
     elHash.innerText = "-";
     elDiff.innerText = "-";
     elMempool.innerText = "-";
+    if (hashHeader) hashHeader.innerHTML = "Network Hashrate";
+    if (diffHeader) diffHeader.innerHTML = "Difficulty";
     if (elMempoolTooltip) elMempoolTooltip.innerText = "Waiting for peers...";
   } else if (isCatchingUp) {
-    elHash.innerText = "Syncing...";
-    elDiff.innerText = "Syncing...";
-    elMempool.innerText = "Syncing...";
-    if (elMempoolTooltip) elMempoolTooltip.innerText = "Mempool unavailable during bulk sync";
+    elHash.innerText = "-";
+    elDiff.innerText = "-";
+    elMempool.innerText = "-";
+    if (hashHeader) hashHeader.innerHTML = `Network Hashrate ${syncTooltipHTML}`;
+    if (diffHeader) diffHeader.innerHTML = `Difficulty ${syncTooltipHTML}`;
+    if (elMempoolTooltip) elMempoolTooltip.innerText = "Unavailable during bulk sync";
   } else {
     const netHashrate = r.difficulty ? r.difficulty / 60 : 0;
     elHash.innerText = formatHashrate(netHashrate);
@@ -220,6 +228,9 @@ async function updateOverview() {
     
     const txPoolCount = r.tx_pool_size || 0;
     elMempool.innerText = txPoolCount + (txPoolCount === 1 ? " TX" : " TXs");
+    
+    if (hashHeader) hashHeader.innerHTML = "Network Hashrate";
+    if (diffHeader) diffHeader.innerHTML = "Difficulty";
     if (elMempoolTooltip) elMempoolTooltip.innerText = txPoolCount + " transactions in mempool";
   }
 
