@@ -138,7 +138,11 @@ async function updateOverview() {
   document.getElementById("mempoolTooltip").innerText = txPoolCount + " transactions in mempool";
 
   const actualHeight = r.height || 0;
-  const targetHeight = r.target_height || 0;
+  let targetHeight = r.target_height || 0;
+  
+  if (targetHeight === 0 && actualHeight > 0) {
+    targetHeight = actualHeight;
+  }
   
   const syncEl = document.getElementById("syncText");
   const progressEl = document.getElementById("progress");
