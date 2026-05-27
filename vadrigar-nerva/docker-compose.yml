@@ -11,8 +11,7 @@ services:
     restart: unless-stopped
     image: sn1f3rt/nerva:v0.2.2.0-rc2
     depends_on:
-      downloader:
-        condition: service_completed_successfully
+      - downloader
     ports:
       - "17565:17565"
       - "17566:17566"

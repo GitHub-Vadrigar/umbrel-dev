@@ -1,6 +1,9 @@
 #!/bin/sh
 set -u
 
+# Reset de status bij elke (her)start van de container
+rm -f /data/nerva/.download_complete
+
 echo "Wachten op initialisatie via webinterface..."
 while [ ! -f /data/nerva/settings.conf ]; do
   sleep 3
@@ -87,7 +90,7 @@ if [ "${USE_QUICKSYNC:-false}" = "true" ]; then
     check_and_download 'quicksync.raw' "${BASE_URL}/quicksync.raw" 'false' || exit 1
 else
     echo "Quicksync overgeslagen door gebruiker."
-    rm -f /data/nerva/quicksync.raw # Verwijder het bestand als het nog rondslingerde
+    rm -f /data/nerva/quicksync.raw
 fi
 
 check_and_download 'p2pstate.nerva.v11.bin' "${BASE_URL}/p2pstate.nerva.v11.bin" 'true' || exit 1
@@ -95,4 +98,9 @@ check_and_download 'p2pstate.nerva.v11.bin' "${BASE_URL}/p2pstate.nerva.v11.bin"
 chown -R 1000:1000 /data/nerva
 
 echo "All downloads and verifications completed successfully."
-exit 0
+
+# Geef het startsein aan de nervad container
+touch /data/nerva/.download_complete
+
+echo "Downloader gaat nu in slaapstand om de container actief te houden voor Umbrel..."
+exec tail -f /dev/null

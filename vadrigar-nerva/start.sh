@@ -3,9 +3,13 @@ set -u
 
 cd /data/nerva || exit 1
 
+echo "Wachten tot het downloadproces en de verificatie zijn voltooid..."
+while [ ! -f "/data/nerva/.download_complete" ]; do
+    sleep 3
+done
+
 SETTINGS_FILE="settings.conf"
 
-# Mocht het bestand om een of andere reden ontbreken, gebruik veilige defaults
 if [ ! -f "$SETTINGS_FILE" ]; then
     echo 'USE_QUICKSYNC="false"' > "$SETTINGS_FILE"
 fi
