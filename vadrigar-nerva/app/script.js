@@ -17,7 +17,7 @@ async function checkSetupStatus() {
       pollData(); // Start the dashboard polling only if setup is complete
     }
   } catch (e) {
-    console.error("Setup API niet bereikbaar. Probeer opnieuw in 3 seconden...");
+    console.error("Setup API unreachable. Retry in 3 seconds...");
     setTimeout(checkSetupStatus, 3000);
   }
 }
@@ -26,7 +26,7 @@ async function checkSetupStatus() {
 async function finishSetup() {
   const useQuicksync = document.getElementById("setupQuicksync").checked;
   const btn = document.querySelector(".wizard-modal .btn-primary");
-  btn.innerText = "Opslaan...";
+  btn.innerText = "Saving...";
   btn.disabled = true;
 
   try {
@@ -37,13 +37,13 @@ async function finishSetup() {
     });
     
     document.getElementById("setupWizard").style.display = "none";
-    document.getElementById("syncText").innerHTML = "Node Initialiseren...";
-    document.getElementById("eta").innerText = "Afhankelijk van downloadtijd...";
+    document.getElementById("syncText").innerHTML = "Initialising node...";
+    document.getElementById("eta").innerText = "Waiting for download...";
     
-    pollData(); // Start polling, daemon zal zo opkomen
+    pollData(); // Start polling, daemon available soon
   } catch (e) {
-    alert("Fout bij opslaan van instellingen. Probeer het nog eens.");
-    btn.innerText = "Opslaan en Start Node";
+    alert("Error saving settings. Please try again.");
+    btn.innerText = "Save and Start Node";
     btn.disabled = false;
   }
 }
@@ -506,45 +506,6 @@ function initializeSettings() {
 
   const savedWallet = localStorage.getItem("nerva_wallet");
   if (savedWallet) document.getElementById("mineAddress").value = savedWallet;
-
-  loadNodeSettings();
-}
-
-async function loadNodeSettings() {
-  try {
-    const res = await fetch("/api/settings");
-    if (!res.ok) return;
-    const settings = await res.json();
-    
-    const quicksyncToggle = document.getElementById("settingQuicksync");
-    if (quicksyncToggle && settings.useQuicksync !== undefined) {
-      quicksyncToggle.checked = settings.useQuicksync;
-    }
-    
-    // Future settings can simply be mapped here:
-    // if (document.getElementById("settingPadTx")) {
-    //   document.getElementById("settingPadTx").checked = settings.padTransactions;
-    // }
-
-  } catch (e) {
-    console.error("Failed to load node settings from API:", e);
-  }
-}
-
-async function saveNodeSetting(key, value) {
-  try {
-    const res = await fetch("/api/save-settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [key]: value })
-    });
-    
-    if (!res.ok) throw new Error("Backend rejected the setting change");
-    console.log(`Setting successfully saved: ${key} = ${value}`);
-  } catch (e) {
-    alert("Failed to update node setting. Please try again or check logs.");
-    loadNodeSettings();
-  }
 }
 
 async function pollData() {

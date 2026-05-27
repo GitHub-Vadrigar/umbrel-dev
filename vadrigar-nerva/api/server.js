@@ -8,7 +8,6 @@ app.use(express.json());
 
 const SETTINGS_FILE = '/data/nerva/settings.conf';
 
-// Check of de setup al is doorlopen
 app.get('/api/setup-status', (req, res) => {
     if (fs.existsSync(SETTINGS_FILE)) {
         res.json({ setupComplete: true });
@@ -17,11 +16,10 @@ app.get('/api/setup-status', (req, res) => {
     }
 });
 
-// Sla de instellingen op
 app.post('/api/save-setup', (req, res) => {
     const useQuicksync = req.body.useQuicksync === true ? "true" : "false";
     
-    // Voeg hier in de toekomst je andere variabelen aan toe
+    // Space for future settings expansion
     const content = `USE_QUICKSYNC="${useQuicksync}"\n`;
     
     fs.writeFileSync(SETTINGS_FILE, content);
@@ -29,5 +27,5 @@ app.post('/api/save-setup', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log('Nerva API luistert op poort 3000');
+    console.log('Nerva API listening on port 3000');
 });

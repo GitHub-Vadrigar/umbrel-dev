@@ -4,7 +4,7 @@ name: Nerva Node
 tagline: Run your own Nerva node
 icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/app/logo-u.png
 category: crypto
-version: "0.3.8a23"
+version: "0.3.8-rc1"
 port: 17578
 description: >-
   Run your own Nerva node. Monitor sync status, peers and blocks.
@@ -23,8 +23,8 @@ description: >-
     - Node sync can be slow on small or busy systems. SSD is recommended.
   
   Components:
-    - Official Nerva Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva
-    - Docker official image: nginx
+    - Official Nerva v0.2.2.0 Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva
+    - Docker official images: alpine:3.23.4, node:26.2-alpine and nginx:1.31.1-alpine
 
 developer: GitHub-Vadrigar
 website: https://nerva.one
@@ -37,7 +37,7 @@ gallery:
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/2.png
   - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/3.png
 releaseNotes: >-
-    Nerva Deamon updated to v0.2.2.0. Added hash check on downloaded quicksync and p2pstate files for improved security.
+    Nerva Deamon updated to v0.2.2.0. Added first-launch Setup wizard. Added hash check on downloaded quicksync and p2pstate files for improved security.
 dependencies: []
 path: ""
 defaultUsername: ""

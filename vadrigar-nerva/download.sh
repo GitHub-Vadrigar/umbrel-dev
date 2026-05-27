@@ -23,12 +23,12 @@ NERVA_VERSION="v0.2.2.0-rc2"
 BASE_URL="https://github.com/nerva-project/nerva/releases/download/${NERVA_VERSION}"
 GPG_KEY_URL="https://raw.githubusercontent.com/nerva-project/nerva/master/gpg_keys/sn1f3rt.asc"
 
-echo "Fetching GPG key, hashes.txt, and signatures..."
+echo "Fetching GPG-key, hashes.txt and signatures..."
 wget -nv -O sn1f3rt.asc "$GPG_KEY_URL" || exit 1
 wget -nv -O hashes.txt "${BASE_URL}/hashes.txt" || exit 1
 wget -nv -O signatures.zip "${BASE_URL}/signatures-${NERVA_VERSION}.zip" || exit 1
 
-echo "Importing GPG key and extracting signature..."
+echo "Importing GPG-key and extracting signature..."
 gpg --import sn1f3rt.asc || exit 1
 unzip -j -o signatures.zip || exit 1
 
