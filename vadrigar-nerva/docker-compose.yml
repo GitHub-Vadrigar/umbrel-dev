@@ -1,0 +1,39 @@
+services:
+  downloader:
+    user: "1000:1000"
+    image: alpine:latest
+    volumes:
+      - ${APP_DATA_DIR}/data/nerva:/data/nerva
+    command: >
+      sh -c "
+      wget -O /data/nerva/p2pstate.nerva.v11.bin https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/p2pstate.nerva.v11.bin;
+      wget -O /data/nerva/quicksync.raw https://github.com/nerva-project/nerva/releases/download/v0.2.1.0/quicksync.raw;
+      "
+  
+  nervad:
+    user: "1000:1000"
+    restart: unless-stopped
+    command: --p2p-bind-ip=0.0.0.0 --p2p-bind-port=17565 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --non-interactive --confirm-external-bind --data-dir=/data/nerva --quicksync /data/nerva/quicksync.raw --log-level 0
+    image: sn1f3rt/nerva:v0.2.1.0
+    depends_on:
+      downloader:
+        condition: service_completed_successfully
+    ports:
+      - "17565:17565"
+      - "17566:17566"
+    volumes:
+      - ${APP_DATA_DIR}/data/nerva:/data/nerva
+
+  app_proxy:
+    environment:
+      APP_HOST: vadrigar-nerva_web_1
+      APP_PORT: 80
+
+  web:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_DIR}/app:/usr/share/nginx/html:ro
+      - ${APP_DATA_DIR}/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - nervad

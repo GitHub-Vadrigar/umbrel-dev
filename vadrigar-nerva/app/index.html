@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nerva Node</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css?v=0.3.7">
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <img src="logo.png" class="logo" alt="Nerva Logo">
+      <div class="brand-text">
+        <h1>Nerva Node</h1>
+        <div class="version-row">
+          <span id="coreVersion">Nerva Daemon v-</span>
+		  <div id="updateIcon" class="tooltip-container" style="display:none; margin: 0px; padding: 0px 7px;">
+			<span style="color: #f1c40f; cursor: help;">i</span>
+			<span class="tooltip-text" id="updateTooltipText"></span>
+		  </div>
+          <div id="statusBadge" class="status-badge">
+            <span class="dot"></span>
+            <span id="statusText">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button onclick="showTab('overview')">Overview</button>
+      <button onclick="showTab('peersTab')">Peers</button>
+      <button onclick="showTab('miningTab')">Mining</button>
+      <button onclick="showTab('settingsTab')">Settings</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="overview" class="tab active">
+      <div id="updateNotification" style="display:none; margin-bottom: 20px;"></div>
+	  
+      <div class="card status-card">
+        <h3>Blockchain</h3>
+        <h2 id="syncText">Connecting...</h2>
+        <div class="progress-bar">
+          <div id="progress"></div>
+        </div>
+      </div>
+
+      <div class="grid">
+		<div class="card"><h3>Network Hashrate</h3><p id="netHash">-</p></div>
+		<div class="card"><h3>Blockchain Size</h3><p id="dbSize">-</p></div>
+		<div class="card"><h3>Difficulty</h3><p id="difficulty">-</p></div>
+		<div class="card"><h3>Peers</h3><p id="peerCount">-</p></div>
+		<div class="card">
+          <h3>Mempool 
+            <span class="tooltip-container">i
+              <span class="tooltip-text" id="mempoolTooltip">0 transactions in mempool</span>
+            </span>
+          </h3>
+          <p id="mempool">-</p>
+		</div>
+		<div class="card"><h3>Sync ETA</h3><p id="eta">-</p></div>
+	  </div>
+
+      <h3 class="section-title">Recent Blocks</h3>
+      <div id="blocksRow" class="blocks-row">
+        </div>
+    </div>
+
+    <div id="peersTab" class="tab">
+      <div class="card">
+        <h2>Peers</h2>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>IP</th>
+                <th>Direction</th>
+                <th>Height</th>
+              </tr>
+            </thead>
+            <tbody id="peerTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+	<div id="miningTab" class="tab">
+      <div class="card">
+        <h2>Mining Configuration</h2>
+        <p>Solo mine directly from your Umbrel node to support the network.</p>
+        
+        <div class="input-group">
+          <label for="mineAddress">Nerva Wallet Address:</label>
+          <input type="text" id="mineAddress" placeholder="Enter your NV... address" class="text-input">
+        </div>
+
+        <div class="input-group">
+          <label for="mineThreads">CPU Threads:</label>
+          <input type="number" id="mineThreads" value="1" min="1" class="text-input">
+        </div>
+
+        <div class="mining-controls">
+          <button onclick="startMining()" class="btn-primary">Start Mining</button>
+          <button onclick="stopMining()" class="btn-danger">Stop Mining</button>
+        </div>
+        
+        <div class="info-box" style="margin-top: 20px;">
+          <h3>Mining Status</h3>
+          <p><strong>State:</strong> <span id="miningStatus" style="color:#8b949e;">Idle</span></p>
+          <p><strong>Speed:</strong> <span id="miningSpeed" style="color:var(--text-main);">0 H/s</span></p>
+          <p><strong>Mining to:</strong> <br> <span id="miningTarget" style="font-size: 13px; color:var(--text-main); word-wrap: break-word;">-</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsTab" class="tab">
+      <div class="card">
+        <h2>Connection Details</h2>
+        <p>Copy and paste the line below into your <strong>Nerva One</strong> wallet to connect to your node.</p>
+
+        <div class="info-box">
+          <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 18px; font-weight: bold;">Loading...</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js?v=0.3.7"></script>
+
+</body>
+</html>
