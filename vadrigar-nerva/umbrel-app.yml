@@ -4,7 +4,7 @@ name: Nerva Node
 tagline: Run your own Nerva node
 icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/app/logo-u.png
 category: crypto
-version: "0.3.8a22"
+version: "0.3.8a23"
 port: 17578
 description: >-
   Run your own Nerva node. Monitor sync status, peers and blocks.

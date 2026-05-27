@@ -3,7 +3,7 @@ set -u
 
 cd /data/nerva || exit 1
 
-echo "Wachten tot het downloadproces en de verificatie zijn voltooid..."
+echo "Waiting for backend download process and verification to complete..."
 while [ ! -f "/data/nerva/.download_complete" ]; do
     sleep 3
 done
@@ -19,9 +19,9 @@ fi
 DAEMON_ARGS="--p2p-bind-ip=0.0.0.0 --p2p-bind-port=17565 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --non-interactive --confirm-external-bind --data-dir=/data/nerva --log-level 0"
 
 if [ "${USE_QUICKSYNC:-false}" = "true" ] && [ -f "/data/nerva/quicksync.raw" ]; then
-    echo "Quicksync geactiveerd."
+    echo "Quicksync bootstrap enabled."
     DAEMON_ARGS="$DAEMON_ARGS --quicksync /data/nerva/quicksync.raw"
 fi
 
-echo "Launching nervad..."
+echo "Launching nerva deamon..."
 exec nervad $DAEMON_ARGS

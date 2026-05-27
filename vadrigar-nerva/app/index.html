@@ -4,27 +4,27 @@
   <meta charset="UTF-8">
   <title>Nerva Node</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css?v=0.3.8a22">
+  <link rel="stylesheet" href="style.css?v=0.3.8a23">
 </head>
 <body>
 
 <div id="setupWizard" class="wizard-overlay" style="display: none;">
   <div class="wizard-modal">
-    <h2>Welkom bij de Nerva Node!</h2>
-    <p>Voordat we de node opstarten en het synchroniseren begint, hebben we één instelling van je nodig.</p>
+    <h2>Welcome to the Nerva Node!</h2>
+    <p>Before we start the node and begin syncing, we need you to configure one setting.</p>
     
     <div class="wizard-option">
-      <h3>Quicksync Gebruiken?</h3>
-      <p>Quicksync downloadt een recente kopie van de blockchain, wat uren (of zelfs dagen) aan synchronisatietijd kan besparen. Zonder quicksync wordt de blockchain volledig vanaf het genesis block gedownload en geverifieerd.</p>
+      <h3>Enable Quicksync?</h3>
+      <p>Quicksync downloads a recent copy of the blockchain, which can save hours (or even days) of synchronization time. Without quicksync, the blockchain will be downloaded and verified entirely from the genesis block.</p>
       
       <label class="toggle-switch">
         <input type="checkbox" id="setupQuicksync" checked>
         <span class="slider"></span>
-        <span class="toggle-label">Activeer Quicksync (Aanbevolen)</span>
+        <span class="toggle-label">Activate Quicksync (Recommended)</span>
       </label>
     </div>
 
-    <button class="btn-primary" onclick="finishSetup()" style="width: 100%; margin-top: 20px;">Opslaan en Start Node</button>
+    <button class="btn-primary" onclick="finishSetup()" style="width: 100%; margin-top: 20px;">Save and Start Node</button>
   </div>
 </div>
 
@@ -36,10 +36,10 @@
         <h1>Nerva Node</h1>
         <div class="version-row">
           <span id="coreVersion">Nerva Daemon v-</span>
-		  <div id="updateIcon" class="tooltip-container" style="display:none; margin: 0px; padding: 0px 7px;">
-			<span style="color: #f1c40f; cursor: help;">i</span>
-			<span class="tooltip-text" id="updateTooltipText"></span>
-		  </div>
+      <div id="updateIcon" class="tooltip-container" style="display:none; margin: 0px; padding: 0px 7px;">
+      <span style="color: #f1c40f; cursor: help;">i</span>
+      <span class="tooltip-text" id="updateTooltipText"></span>
+      </div>
           <div id="statusBadge" class="status-badge">
             <span class="dot"></span>
             <span id="statusText">Loading...</span>
@@ -59,7 +59,7 @@
   <div class="content">
     <div id="overview" class="tab active">
       <div id="updateNotification" style="display:none; margin-bottom: 20px;"></div>
-	  
+    
       <div class="card status-card">
         <h3>Blockchain</h3>
         <h2 id="syncText">Connecting...</h2>
@@ -69,20 +69,20 @@
       </div>
 
       <div class="grid">
-		<div class="card"><h3>Network Hashrate</h3><p id="netHash">-</p></div>
-		<div class="card"><h3>Difficulty</h3><p id="difficulty">-</p></div>
-		<div class="card">
+    <div class="card"><h3>Network Hashrate</h3><p id="netHash">-</p></div>
+    <div class="card"><h3>Difficulty</h3><p id="difficulty">-</p></div>
+    <div class="card">
           <h3>Mempool 
             <span class="tooltip-container">i
               <span class="tooltip-text" id="mempoolTooltip">0 transactions in mempool</span>
             </span>
           </h3>
           <p id="mempool">-</p>
-		</div>
-		<div class="card"><h3>Blockchain Size</h3><p id="dbSize">-</p></div>
-		<div class="card"><h3>Peers</h3><p id="peerCount">-</p></div>
-		<div class="card"><h3>Sync ETA</h3><p id="eta">-</p></div>
-	  </div>
+    </div>
+    <div class="card"><h3>Blockchain Size</h3><p id="dbSize">-</p></div>
+    <div class="card"><h3>Peers</h3><p id="peerCount">-</p></div>
+    <div class="card"><h3>Sync ETA</h3><p id="eta">-</p></div>
+    </div>
 
       <h3 class="section-title">Recent Blocks</h3>
       <div id="blocksRow" class="blocks-row">
@@ -94,20 +94,20 @@
         <h2>Peers</h2>
         <div class="table-responsive">
           <table>
-			<thead>
-				<tr>
-				  <th id="th-address" onclick="changeSort('address')" style="cursor: pointer;">Peer / IP ▲</th>
-				  <th id="th-direction" onclick="changeSort('direction')" style="cursor: pointer;">Direction</th>
-				  <th id="th-height" onclick="changeSort('height')" style="cursor: pointer;">Height</th>
-				</tr>
-			  </thead>
+      <thead>
+        <tr>
+          <th id="th-address" onclick="changeSort('address')" style="cursor: pointer;">Peer / IP ▲</th>
+          <th id="th-direction" onclick="changeSort('direction')" style="cursor: pointer;">Direction</th>
+          <th id="th-height" onclick="changeSort('height')" style="cursor: pointer;">Height</th>
+        </tr>
+        </thead>
             <tbody id="peerTable"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-	<div id="miningTab" class="tab">
+  <div id="miningTab" class="tab">
       <div class="card">
         <h2>Mining Configuration</h2>
         <p>Solo mine directly from your Umbrel node to support the network.</p>
@@ -140,17 +140,34 @@
       <div class="card">
         <h2>Connection Details</h2>
         <p>Copy and paste the line below into your <strong>Nerva One</strong> wallet to connect to your node.</p>
-
         <div class="info-box">
-          <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 18px; font-weight: bold;">Loading...</span></p>
+          <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 14px; font-weight: bold;">-</span></p>
         </div>
+      </div>
+
+      <div class="card" style="margin-top: 20px;">
+        <h2>Node Configuration</h2>
+        <p>Adjust node preferences below. Note: changing core daemon options may require an app restart via Umbrel.</p>
+        
+        <div class="settings-list">
+          <div class="settings-item">
+            <div class="settings-info">
+              <label for="settingQuicksync" class="settings-label">Enable Quicksync Bootstrap</label>
+              <span class="settings-desc">Download a pre-verified chain snapshot for rapid initial sync. Disabling this syncs from scratch (slower, more private).</span>
+            </div>
+            <div class="settings-control">
+              <input type="checkbox" id="settingQuicksync" onchange="saveNodeSetting('useQuicksync', this.checked)" class="toggle-switch">
+            </div>
+          </div>
+
+          </div>
       </div>
     </div>
 
   </div>
 </div>
 
-<script src="script.js?v=0.3.8a22"></script>
+<script src="script.js?v=0.3.8a23"></script>
 
 </body>
 </html>

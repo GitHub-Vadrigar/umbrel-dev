@@ -1,15 +1,15 @@
 #!/bin/sh
 set -u
 
-# Reset de status bij elke (her)start van de container
+# Reset the status file upon every container (re)start
 rm -f /data/nerva/.download_complete
 
-echo "Wachten op initialisatie via webinterface..."
+echo "Waiting for initialization via web interface..."
 while [ ! -f /data/nerva/settings.conf ]; do
   sleep 3
 done
 
-echo "Instellingen gevonden! Laden..."
+echo "Settings found! Loading..."
 . /data/nerva/settings.conf
 
 apk update && apk add --no-cache gnupg unzip wget coreutils || exit 1
@@ -23,16 +23,16 @@ NERVA_VERSION="v0.2.2.0-rc2"
 BASE_URL="https://github.com/nerva-project/nerva/releases/download/${NERVA_VERSION}"
 GPG_KEY_URL="https://raw.githubusercontent.com/nerva-project/nerva/master/gpg_keys/sn1f3rt.asc"
 
-echo "Fetching GPG-key, hashes.txt and signatures..."
+echo "Fetching GPG key, hashes.txt, and signatures..."
 wget -nv -O sn1f3rt.asc "$GPG_KEY_URL" || exit 1
 wget -nv -O hashes.txt "${BASE_URL}/hashes.txt" || exit 1
 wget -nv -O signatures.zip "${BASE_URL}/signatures-${NERVA_VERSION}.zip" || exit 1
 
-echo "Importing GPG-key and extracting signature..."
+echo "Importing GPG key and extracting signature..."
 gpg --import sn1f3rt.asc || exit 1
 unzip -j -o signatures.zip || exit 1
 
-echo "Verify hashes.txt..."
+echo "Verifying hashes.txt..."
 if ! gpg --verify hashes.txt.asc hashes.txt; then
   echo "ERROR: GPG verification of hashes.txt failed!"
   exit 1
@@ -75,7 +75,7 @@ check_and_download() {
   
   LOCAL_HASH=$(sha256sum "$FILE" | awk '{print $1}')
   if [ "$LOCAL_HASH" != "$EXPECTED_HASH" ]; then
-    echo "ERROR: Hash mismatch for $FILE post-download. File will be removed."
+    echo "ERROR: Hash mismatch for $FILE post-download. Removing file."
     rm "$FILE"
     return 1
   else
@@ -84,12 +84,12 @@ check_and_download() {
   fi
 }
 
-# Controleer instelling voordat quicksync wordt gedownload
+# Check user preference before downloading quicksync
 if [ "${USE_QUICKSYNC:-false}" = "true" ]; then
-    echo "Gebruiker heeft Quicksync ingeschakeld, bestand wordt verwerkt..."
+    echo "User enabled Quicksync. Processing dynamic blockchain bootstrap..."
     check_and_download 'quicksync.raw' "${BASE_URL}/quicksync.raw" 'false' || exit 1
 else
-    echo "Quicksync overgeslagen door gebruiker."
+    echo "Quicksync skipped by user preference."
     rm -f /data/nerva/quicksync.raw
 fi
 
@@ -99,8 +99,8 @@ chown -R 1000:1000 /data/nerva
 
 echo "All downloads and verifications completed successfully."
 
-# Geef het startsein aan de nervad container
+# Signal the nervad container that assets are ready
 touch /data/nerva/.download_complete
 
-echo "Downloader gaat nu in slaapstand om de container actief te houden voor Umbrel..."
+echo "Downloader entering standby to keep container active for Umbrel orchestration..."
 exec tail -f /dev/null

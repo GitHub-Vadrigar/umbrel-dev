@@ -506,6 +506,45 @@ function initializeSettings() {
 
   const savedWallet = localStorage.getItem("nerva_wallet");
   if (savedWallet) document.getElementById("mineAddress").value = savedWallet;
+
+  loadNodeSettings();
+}
+
+async function loadNodeSettings() {
+  try {
+    const res = await fetch("/api/settings");
+    if (!res.ok) return;
+    const settings = await res.json();
+    
+    const quicksyncToggle = document.getElementById("settingQuicksync");
+    if (quicksyncToggle && settings.useQuicksync !== undefined) {
+      quicksyncToggle.checked = settings.useQuicksync;
+    }
+    
+    // Future settings can simply be mapped here:
+    // if (document.getElementById("settingPadTx")) {
+    //   document.getElementById("settingPadTx").checked = settings.padTransactions;
+    // }
+
+  } catch (e) {
+    console.error("Failed to load node settings from API:", e);
+  }
+}
+
+async function saveNodeSetting(key, value) {
+  try {
+    const res = await fetch("/api/save-settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [key]: value })
+    });
+    
+    if (!res.ok) throw new Error("Backend rejected the setting change");
+    console.log(`Setting successfully saved: ${key} = ${value}`);
+  } catch (e) {
+    alert("Failed to update node setting. Please try again or check logs.");
+    loadNodeSettings();
+  }
 }
 
 async function pollData() {
