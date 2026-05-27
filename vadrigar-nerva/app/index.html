@@ -4,9 +4,29 @@
   <meta charset="UTF-8">
   <title>Nerva Node</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css?v=0.3.8a21">
+  <link rel="stylesheet" href="style.css?v=0.3.8a22">
 </head>
 <body>
+
+<div id="setupWizard" class="wizard-overlay" style="display: none;">
+  <div class="wizard-modal">
+    <h2>Welkom bij de Nerva Node!</h2>
+    <p>Voordat we de node opstarten en het synchroniseren begint, hebben we één instelling van je nodig.</p>
+    
+    <div class="wizard-option">
+      <h3>Quicksync Gebruiken?</h3>
+      <p>Quicksync downloadt een recente kopie van de blockchain, wat uren (of zelfs dagen) aan synchronisatietijd kan besparen. Zonder quicksync wordt de blockchain volledig vanaf het genesis block gedownload en geverifieerd.</p>
+      
+      <label class="toggle-switch">
+        <input type="checkbox" id="setupQuicksync" checked>
+        <span class="slider"></span>
+        <span class="toggle-label">Activeer Quicksync (Aanbevolen)</span>
+      </label>
+    </div>
+
+    <button class="btn-primary" onclick="finishSetup()" style="width: 100%; margin-top: 20px;">Opslaan en Start Node</button>
+  </div>
+</div>
 
 <div class="app">
   <div class="header">
@@ -130,7 +150,7 @@
   </div>
 </div>
 
-<script src="script.js?v=0.3.8a21"></script>
+<script src="script.js?v=0.3.8a22"></script>
 
 </body>
 </html>

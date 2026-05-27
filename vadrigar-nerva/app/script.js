@@ -1,8 +1,51 @@
+// UI & NAVIGATION FUNCTIONS
 function showTab(tabId) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.getElementById(tabId).classList.add("active");
   document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active-nav"));
   if (event) event.currentTarget.classList.add("active-nav");
+}
+
+// SETUP CHECK
+async function checkSetupStatus() {
+  try {
+    const res = await fetch("/api/setup-status");
+    const data = await res.json();
+    if (!data.setupComplete) {
+      document.getElementById("setupWizard").style.display = "flex";
+    } else {
+      pollData(); // Start the dashboard polling only if setup is complete
+    }
+  } catch (e) {
+    console.error("Setup API niet bereikbaar. Probeer opnieuw in 3 seconden...");
+    setTimeout(checkSetupStatus, 3000);
+  }
+}
+
+// SETUP SAVING
+async function finishSetup() {
+  const useQuicksync = document.getElementById("setupQuicksync").checked;
+  const btn = document.querySelector(".wizard-modal .btn-primary");
+  btn.innerText = "Opslaan...";
+  btn.disabled = true;
+
+  try {
+    await fetch("/api/save-setup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ useQuicksync })
+    });
+    
+    document.getElementById("setupWizard").style.display = "none";
+    document.getElementById("syncText").innerHTML = "Node Initialiseren...";
+    document.getElementById("eta").innerText = "Afhankelijk van downloadtijd...";
+    
+    pollData(); // Start polling, daemon zal zo opkomen
+  } catch (e) {
+    alert("Fout bij opslaan van instellingen. Probeer het nog eens.");
+    btn.innerText = "Opslaan en Start Node";
+    btn.disabled = false;
+  }
 }
 
 // SAFE RPC
@@ -473,4 +516,4 @@ async function pollData() {
 }
 
 initializeSettings();
-pollData();
+checkSetupStatus();

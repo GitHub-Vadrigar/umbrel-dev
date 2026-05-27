@@ -1,6 +1,14 @@
 #!/bin/sh
 set -u
 
+echo "Wachten op initialisatie via webinterface..."
+while [ ! -f /data/nerva/settings.conf ]; do
+  sleep 3
+done
+
+echo "Instellingen gevonden! Laden..."
+. /data/nerva/settings.conf
+
 apk update && apk add --no-cache gnupg unzip wget coreutils || exit 1
 
 cd /data/nerva || exit 1
@@ -17,7 +25,7 @@ wget -nv -O sn1f3rt.asc "$GPG_KEY_URL" || exit 1
 wget -nv -O hashes.txt "${BASE_URL}/hashes.txt" || exit 1
 wget -nv -O signatures.zip "${BASE_URL}/signatures-${NERVA_VERSION}.zip" || exit 1
 
-echo "Importing GPG-key and and extracting signature..."
+echo "Importing GPG-key and extracting signature..."
 gpg --import sn1f3rt.asc || exit 1
 unzip -j -o signatures.zip || exit 1
 
@@ -26,12 +34,11 @@ if ! gpg --verify hashes.txt.asc hashes.txt; then
   echo "ERROR: GPG verification of hashes.txt failed!"
   exit 1
 fi
-echo "Succes: hashes.txt is safe and verified."
+echo "Success: hashes.txt is safe and verified."
 
 rm sn1f3rt.asc signatures.zip hashes.txt.asc
 rm -rf "$GNUPGHOME"
 
-echo "Check hash and download..."
 check_and_download() {
   FILE="$1"
   URL="$2"
@@ -74,7 +81,15 @@ check_and_download() {
   fi
 }
 
-check_and_download 'quicksync.raw' "${BASE_URL}/quicksync.raw" 'false' || exit 1
+# Controleer instelling voordat quicksync wordt gedownload
+if [ "${USE_QUICKSYNC:-false}" = "true" ]; then
+    echo "Gebruiker heeft Quicksync ingeschakeld, bestand wordt verwerkt..."
+    check_and_download 'quicksync.raw' "${BASE_URL}/quicksync.raw" 'false' || exit 1
+else
+    echo "Quicksync overgeslagen door gebruiker."
+    rm -f /data/nerva/quicksync.raw # Verwijder het bestand als het nog rondslingerde
+fi
+
 check_and_download 'p2pstate.nerva.v11.bin' "${BASE_URL}/p2pstate.nerva.v11.bin" 'true' || exit 1
 
 chown -R 1000:1000 /data/nerva
