@@ -4,7 +4,7 @@ FROM node:26.2-alpine
 RUN apk add --no-cache nginx gnupg unzip wget coreutils
 
 # Nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/http.d/default.conf
 
 # Frontend
 WORKDIR /usr/share/nginx/html
