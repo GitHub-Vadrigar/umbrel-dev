@@ -1,0 +1,30 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - '0.3.8-rc1'
+    paths:
+      - 'vadrigar-nerva/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code from repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./vadrigar-nerva
+          file: ./vadrigar-nerva/Dockerfile
+          push: true
+          tags: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.3.8-rc1
