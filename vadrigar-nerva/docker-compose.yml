@@ -1,6 +1,6 @@
 services:
   web:
-    image: vadrigar-nerva-web:0.3.8-rc1
+    image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.3.8-rc1
     restart: unless-stopped
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
