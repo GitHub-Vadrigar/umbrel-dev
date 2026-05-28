@@ -1,44 +1,25 @@
 services:
-  downloader:
-    image: alpine:3.23.4
+  web:
+    image: vadrigar-nerva-web:0.3.8-rc1
+    restart: unless-stopped
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
-      - ${APP_DATA_DIR}/download.sh:/download.sh
-    entrypoint: ["/bin/sh", "/download.sh"]
+      - /var/run/docker.sock:/var/run/docker.sock
   
   nervad:
     user: "1000:1000"
     restart: unless-stopped
     image: sn1f3rt/nerva:v0.2.2.0-rc2
     depends_on:
-      - downloader
+      - web
     ports:
       - "17565:17565"
       - "17566:17566"
     volumes:
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
-      - ${APP_DATA_DIR}/start.sh:/start.sh:ro
-    entrypoint: ["/bin/sh", "/start.sh"]
+    command: ["/bin/sh", "-c", "while [ ! -f /data/nerva/start.sh ]; do sleep 1; done; exec /bin/sh /data/nerva/start.sh"]
 
   app_proxy:
     environment:
       APP_HOST: vadrigar-nerva_web_1
       APP_PORT: 80
-
-  api:
-    image: node:26.2-alpine
-    working_dir: /app
-    volumes:
-      - ${APP_DATA_DIR}/api:/app
-      - ${APP_DATA_DIR}/data/nerva:/data/nerva
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: sh -c "npm install express cors && node server.js"
-
-  web:
-    image: nginx:1.31.1-alpine
-    restart: unless-stopped
-    volumes:
-      - ${APP_DATA_DIR}/app:/usr/share/nginx/html:ro
-      - ${APP_DATA_DIR}/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - api

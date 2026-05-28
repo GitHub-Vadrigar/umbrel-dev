@@ -12,8 +12,6 @@ done
 echo "Settings found! Loading..."
 . /data/nerva/settings.conf
 
-apk update && apk add --no-cache gnupg unzip wget coreutils || exit 1
-
 cd /data/nerva || exit 1
 
 export GNUPGHOME=$(mktemp -d)

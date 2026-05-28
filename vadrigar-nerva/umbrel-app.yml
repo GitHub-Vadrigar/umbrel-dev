@@ -24,7 +24,7 @@ description: >-
   
   Components:
     - Official Nerva v0.2.2.0 Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva
-    - Docker official images: alpine:3.23.4, node:26.2-alpine and nginx:1.31.1-alpine
+    - Docker official image: node:26.2-alpine within a custom build image
 
 developer: GitHub-Vadrigar
 website: https://nerva.one
