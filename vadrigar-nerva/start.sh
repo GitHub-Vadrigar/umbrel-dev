@@ -16,7 +16,7 @@ fi
 
 . ./"$SETTINGS_FILE"
 
-DAEMON_ARGS="--p2p-bind-ip=0.0.0.0 --p2p-bind-port=17565 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --non-interactive --confirm-external-bind --data-dir=/data/nerva --log-level 0"
+DAEMON_ARGS="--p2p-bind-ip=0.0.0.0 --p2p-bind-port=17565 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=17566 --non-interactive --confirm-external-bind --data-dir=/data/nerva --log-level 3"
 
 if [ "${USE_QUICKSYNC:-false}" = "true" ] && [ -f "/data/nerva/quicksync.raw" ]; then
     echo "Quicksync bootstrap enabled."

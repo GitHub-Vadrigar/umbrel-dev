@@ -17,7 +17,7 @@ cd /data/nerva || exit 1
 export GNUPGHOME=$(mktemp -d)
 chmod 700 "$GNUPGHOME"
 
-NERVA_VERSION="v0.2.2.0-rc2"
+NERVA_VERSION="v0.2.2.0"
 BASE_URL="https://github.com/nerva-project/nerva/releases/download/${NERVA_VERSION}"
 GPG_KEY_URL="https://raw.githubusercontent.com/nerva-project/nerva/master/gpg_keys/sn1f3rt.asc"
 

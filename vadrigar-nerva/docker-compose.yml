@@ -3,13 +3,14 @@ services:
     image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.3.8-rc1
     restart: unless-stopped
     volumes:
+      - ${APP_DATA_DIR}:/app_root
       - ${APP_DATA_DIR}/data/nerva:/data/nerva
       - /var/run/docker.sock:/var/run/docker.sock
   
   nervad:
     user: "1000:1000"
     restart: unless-stopped
-    image: sn1f3rt/nerva:v0.2.2.0-rc2
+    image: sn1f3rt/nerva:v0.2.2.0
     depends_on:
       - web
     ports:
