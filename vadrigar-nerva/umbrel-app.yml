@@ -2,7 +2,7 @@ manifestVersion: 1
 id: vadrigar-nerva
 name: Nerva Node
 tagline: Run your own Nerva node
-icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/app/logo-u.png
+icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/logo-u.png
 category: crypto
 version: "0.3.8"
 port: 17578
@@ -35,9 +35,9 @@ submission: https://github.com/GitHub-Vadrigar/umbrel-apps
 repo: https://github.com/GitHub-Vadrigar/umbrel-apps
 support: https://github.com/GitHub-Vadrigar/umbrel-apps/issues
 gallery:
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/1.png
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/2.png
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/img/3.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/1.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/2.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/3.png
 releaseNotes: >-
     Nerva Deamon updated to v0.2.2.0. Added first-launch Setup wizard. Added hash check on downloaded quicksync and p2pstate files for improved security.
 dependencies: []
