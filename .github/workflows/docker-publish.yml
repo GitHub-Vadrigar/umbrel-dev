@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - '0.3.8-rc1' 
+      - '0.3.8' 
     paths:
       - 'vadrigar-nerva/**'
 

@@ -4,15 +4,17 @@ name: Nerva Node
 tagline: Run your own Nerva node
 icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-apps/refs/heads/master/vadrigar-nerva/app/logo-u.png
 category: crypto
-version: "0.3.8-rc1"
+version: "0.3.8"
 port: 17578
 description: >-
   Run your own Nerva node. Monitor sync status, peers and blocks.
-  
+
+
   NERVA (XNV) is a privacy focused cryptocurrency built for secure transactions, private balances, and true financial fungibility. 
   Using proven Cryptonote privacy technology, NERVA obscures sender, receiver, and transaction amounts on chain. 
   This allows users to transact without exposing their financial history to the public.
-  
+
+
   Features:
     - Dashboard for node, sync, peer and block stats.
     - Connect the NervaOne desktop/mobile wallet to your synced node.
@@ -24,7 +26,7 @@ description: >-
   
   Components:
     - Official Nerva v0.2.2.0 Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva
-    - Docker official image: node:26.2-alpine within a custom build image
+    - Docker official image: node:26.2-alpine as a base for the vadrigar-nerva-web image
 
 developer: GitHub-Vadrigar
 website: https://nerva.one
