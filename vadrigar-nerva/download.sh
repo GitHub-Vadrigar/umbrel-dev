@@ -17,7 +17,7 @@ cd /data/nerva || exit 1
 export GNUPGHOME=$(mktemp -d)
 chmod 700 "$GNUPGHOME"
 
-NERVA_VERSION="v0.2.2.0"
+NERVA_VERSION="v0.2.3.0"
 BASE_URL="https://github.com/nerva-project/nerva/releases/download/${NERVA_VERSION}"
 GPG_KEY_URL="https://raw.githubusercontent.com/nerva-project/nerva/master/gpg_keys/sn1f3rt.asc"
 
@@ -100,5 +100,5 @@ echo "All downloads and verifications completed successfully."
 # Signal the nervad container that assets are ready
 touch /data/nerva/.download_complete
 
-echo "Downloader entering standby to keep container active for Umbrel orchestration..."
-exec tail -f /dev/null
+#echo "Downloader entering standby to keep container active for Umbrel orchestration..."
+#exec tail -f /dev/null

@@ -2,9 +2,9 @@ manifestVersion: 1
 id: vadrigar-nerva
 name: Nerva Node
 tagline: Run your own Nerva node
-icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/logo-u.png
+icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.9/vadrigar-nerva/img/logo-u.png
 category: crypto
-version: "0.3.8"
+version: "0.3.9-rc1"
 port: 17578
 description: >-
   Run your own Nerva node. Monitor sync status, peers and blocks.
@@ -25,7 +25,7 @@ description: >-
     - Node sync can be slow on small or busy systems. SSD is recommended.
   
   Components:
-    - Official Nerva v0.2.2.0 Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva
+    - Official Nerva v0.2.3.0 Docker image from Docker Hub: https://hub.docker.com/r/sn1f3rt/nerva
     - Docker official image: node:26.2-alpine as a base for the vadrigar-nerva-web image
 
 developer: GitHub-Vadrigar
@@ -35,11 +35,11 @@ submission: https://github.com/GitHub-Vadrigar/umbrel-apps
 repo: https://github.com/GitHub-Vadrigar/umbrel-apps
 support: https://github.com/GitHub-Vadrigar/umbrel-apps/issues
 gallery:
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/1.png
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/2.png
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.8/vadrigar-nerva/img/3.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.9/vadrigar-nerva/img/1.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.9/vadrigar-nerva/img/2.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.9/vadrigar-nerva/img/3.png
 releaseNotes: >-
-    Nerva Deamon updated to v0.2.2.0. Added first-launch Setup wizard. Added hash check on downloaded quicksync and p2pstate files for improved security.
+    Nerva Deamon updated to v0.2.3.0. Extended the settings tab with Node configuration parameters.
 dependencies: []
 path: ""
 defaultUsername: ""

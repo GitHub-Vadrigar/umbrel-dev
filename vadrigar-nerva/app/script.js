@@ -4,6 +4,10 @@ function showTab(tabId) {
   document.getElementById(tabId).classList.add("active");
   document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active-nav"));
   if (event) event.currentTarget.classList.add("active-nav");
+
+  if (tabId === 'settingsTab') {
+    loadNodeSettings();
+  }
 }
 
 // SETUP CHECK
@@ -513,6 +517,109 @@ async function pollData() {
   await updatePeers();
   await updateMiningStatus();
   setTimeout(pollData, 5000);
+}
+
+// Load settings into the settings tab
+async function loadNodeSettings() {
+  try {
+    const res = await fetch("/api/settings?t=" + Date.now());
+    if (!res.ok) throw new Error("API unreachable: " + res.status);
+    
+    const settings = await res.json();
+    	
+	const quicksyncToggle = document.getElementById("tabSettingQuicksync");
+    if (quicksyncToggle && settings.USE_QUICKSYNC) {
+      quicksyncToggle.checked = (String(settings.USE_QUICKSYNC).trim().toLowerCase() === "true");
+    }
+
+    const priorityNodeInput = document.getElementById("tabSettingPriorityNode");
+    if (priorityNodeInput && settings.PRIORITY_NODE !== undefined) {
+      priorityNodeInput.value = settings.PRIORITY_NODE;
+    }
+	
+    const exclusiveNodeInput = document.getElementById("tabSettingExclusiveNode");
+    if (exclusiveNodeInput && settings.EXCLUSIVE_NODE !== undefined) {
+      exclusiveNodeInput.value = settings.EXCLUSIVE_NODE;
+    }
+	
+    const LogLevelSelect = document.getElementById("tabSettingLogLevel");
+    if (LogLevelSelect && settings.LOG_LEVEL) {
+      LogLevelSelect.value = settings.LOG_LEVEL;
+    }
+
+    const UPnPToggle = document.getElementById("tabSettingUPnP");
+    if (UPnPToggle && settings.DISABLE_UPNP) {
+      UPnPToggle.checked = (String(settings.DISABLE_UPNP).trim().toLowerCase() === "true");
+    }
+
+    const AnalyticsToggle = document.getElementById("tabSettingAnalytics");
+    if (AnalyticsToggle && settings.NO_ANALYTICS) {
+      AnalyticsToggle.checked = (String(settings.NO_ANALYTICS).trim().toLowerCase() === "true");
+    }
+
+    const HidePortToggle = document.getElementById("tabSettingHidePort");
+    if (HidePortToggle && settings.HIDE_PORT) {
+      HidePortToggle.checked = (String(settings.HIDE_PORT).trim().toLowerCase() === "true");
+    }
+
+  } catch (e) {
+    console.error("Critical failure loading node settings from API:", e);
+  }
+}
+
+// Function triggered by the "Save and Restart Node" button
+async function saveAndRestart() {
+  const btn = document.getElementById("btnSaveRestart");
+  const originalText = btn.innerText;
+  
+  btn.innerText = "Saving and Restarting...";
+  btn.disabled = true;
+
+  const useQuicksync = document.getElementById("tabSettingQuicksync").checked ? "true" : "false";
+  const priorityNode = document.getElementById("tabSettingPriorityNode").value.trim();
+  const exclusiveNode = document.getElementById("tabSettingExclusiveNode").value.trim();
+  const LogLevel = document.getElementById("tabSettingLogLevel").value.trim();
+  const disableUPnP = document.getElementById("tabSettingUPnP").checked ? "true" : "false";
+  const noAnalytics = document.getElementById("tabSettingAnalytics").checked ? "true" : "false";
+  const HidePort = document.getElementById("tabSettingHidePort").checked ? "true" : "false";
+  
+  const payload = {
+	USE_QUICKSYNC: useQuicksync,
+    PRIORITY_NODE: priorityNode,
+	EXCLUSIVE_NODE: exclusiveNode,
+	LOG_LEVEL: LogLevel,
+	DISABLE_UPNP: disableUPnP,
+	NO_ANALYTICS: noAnalytics,
+	HIDE_PORT: HidePort
+  };
+  
+  try {
+    const res = await fetch("/api/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) throw new Error("Backend rejected the settings restart command");
+    
+    alert("Settings saved successfully! The node is restarting in the background. It may take a minute to reconnect.");
+    
+    document.getElementById("statusText").innerText = "Restarting...";
+    document.getElementById("statusBadge").className = "status-badge status-offline";
+    document.getElementById("eta").innerText = "Node is restarting...";
+    
+    // Optional: Auto-reload the page after 15 seconds so UI is fresh after containers reboot
+    setTimeout(() => {
+      window.location.reload();
+    }, 15000);
+    
+  } catch (e) {
+    alert("Failed to save and restart. Please check the logs.");
+    loadNodeSettings(); // Revert UI visually on failure
+  } finally {
+    btn.innerText = originalText;
+    btn.disabled = false;
+  }
 }
 
 initializeSettings();

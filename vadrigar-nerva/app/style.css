@@ -64,7 +64,6 @@ body {
   font-weight: 800;
 }
 
-/* Status en Versie in de header */
 .version-row {
   display: flex;
   align-items: center;
@@ -355,6 +354,49 @@ th { color: #8b949e; font-weight: normal; }
   margin-top: 20px;
   width: 100%;
   box-sizing: border-box;
+}
+
+select.text-input {
+  cursor: pointer;
+}
+
+select.text-input option {
+  background: var(--bg-dark);
+  color: var(--text-main);
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-item.column-layout {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-label {
+  font-weight: bold;
+  color: var(--text-main);
+}
+
+.settings-desc {
+  font-size: 13px;
+  color: #8b949e;
 }
 
 /* =========================================

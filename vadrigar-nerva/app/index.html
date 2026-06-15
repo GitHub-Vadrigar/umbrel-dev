@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Nerva Node</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css?v=0.3.8">
+  <link rel="stylesheet" href="style.css?v=0.3.9">
 </head>
 <body>
 
@@ -136,21 +136,119 @@
       </div>
     </div>
 
-    <div id="settingsTab" class="tab">
+	<div id="settingsTab" class="tab">
       <div class="card">
         <h2>Connection Details</h2>
         <p>Copy and paste the line below into your <strong>Nerva One</strong> wallet to connect to your node.</p>
-
         <div class="info-box">
-          <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 18px; font-weight: bold;">Loading...</span></p>
+          <p><strong>Daemon Address:</strong> <br><br> <span id="nodeIpDisplay" style="color:var(--accent-1); font-size: 14px; font-weight: bold;">-</span></p>
         </div>
+      </div>
+
+      <div class="card" style="margin-top: 20px;">
+        <h2>Node Configuration</h2>
+        <p>Adjust node preferences below. Saving these settings will automatically restart the backend services.</p>
+        
+        <div class="settings-list">
+          		  
+		  <div class="settings-item">
+            <div class="settings-info">
+              <span class="settings-label">Enable QuickSync</span>
+              <span class="settings-desc">Download a pre-verified chain snapshot for rapid initial sync. Disabling this syncs from scratch (slower, maximum privacy).</span>
+            </div>
+            <div class="settings-control auto-width">
+              <label class="pure-switch">
+                <input type="checkbox" id="tabSettingQuicksync">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-item column-layout">
+            <div class="settings-info">
+              <span class="settings-label">Priority Node IP (Optional)</span>
+              <span class="settings-desc">If running multiple Nerva nodes on the same network, enter the IP of your main node to prevent sync issues.</span>
+            </div>
+            <div class="settings-control">
+              <input type="text" id="tabSettingPriorityNode" class="text-input" placeholder="e.g. 192.168.0.50">
+            </div>
+          </div>
+		  
+		  <div class="settings-item column-layout">
+            <div class="settings-info">
+              <span class="settings-label">Exclusive Node IP (Optional)</span>
+              <span class="settings-desc">With exclusive node, you can't connect to other nodes so you'll use your main node as a relay.</span>
+            </div>
+            <div class="settings-control">
+              <input type="text" id="tabSettingExclusiveNode" class="text-input" placeholder="e.g. 192.168.0.50">
+            </div>
+          </div>
+		  
+		  <div class="settings-item">
+            <div class="settings-info">
+              <span class="settings-label">Log level</span>
+              <span class="settings-desc">By default nervad creates a nerva.log in the Nerva data directory. Adjust the verbosity of nervad to suit your node's needs. Level 0 is the default and least verbose, while level 4 is highly verbose and ideal for debugging.</span>
+            </div>
+            <div class="settings-control auto-width">
+			  <select id="tabSettingLogLevel" class="text-input">
+				<option value="0">Level 0</option>
+				<option value="1">Level 1</option>
+				<option value="2">Level 2</option>
+				<option value="3">Level 3</option>
+				<option value="4">Level 4</option>
+			  </select>
+            </div>
+          </div>
+		  
+		  <div class="settings-item">
+            <div class="settings-info">
+              <span class="settings-label">Disable UPnP on Node</span>
+              <span class="settings-desc">Disable UPnP port mapping (default is off)</span>
+            </div>
+            <div class="settings-control auto-width">
+              <label class="pure-switch">
+                <input type="checkbox" id="tabSettingUPnP">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+		  <div class="settings-item">
+            <div class="settings-info">
+              <span class="settings-label">Disable Analytics</span>
+              <span class="settings-desc">Do not submit any information to the node map</span>
+            </div>
+            <div class="settings-control auto-width">
+              <label class="pure-switch">
+                <input type="checkbox" id="tabSettingAnalytics">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+		  
+		  <div class="settings-item">
+            <div class="settings-info">
+              <span class="settings-label">Hide Port</span>
+              <span class="settings-desc">Do not announce your node as peerlist candidate</span>
+            </div>
+            <div class="settings-control auto-width">
+              <label class="pure-switch">
+                <input type="checkbox" id="tabSettingHidePort">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="btn-primary" id="btnSaveRestart" onclick="saveAndRestart()" style="width: 100%; margin-top: 20px;">Save and Restart Node</button>
       </div>
     </div>
 
   </div>
 </div>
 
-<script src="script.js?v=0.3.8"></script>
+<script src="script.js?v=0.3.9"></script>
 
 </body>
 </html>
