@@ -64,6 +64,7 @@ body {
   font-weight: 800;
 }
 
+/* Status en Versie in de header */
 .version-row {
   display: flex;
   align-items: center;
@@ -348,55 +349,36 @@ th { color: #8b949e; font-weight: normal; }
 
 .info-box {
   background: var(--bg-dark);
-  padding: 15px;
-  border-radius: 8px;
-  border-left: 4px solid var(--accent-1);
+  padding: 15px 20px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
   margin-top: 20px;
   width: 100%;
   box-sizing: border-box;
 }
 
-select.text-input {
+select#tabSettingLogLevel {
+  width: 100%;
+  min-width: 90px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 14px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
-select.text-input option {
-  background: var(--bg-dark);
+select#tabSettingLogLevel:focus {
+  outline: none;
+  border-color: var(--accent-1);
+}
+
+select#tabSettingLogLevel option {
+  background-color: var(--bg-card);
   color: var(--text-main);
-}
-
-.settings-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.settings-item:last-child {
-  border-bottom: none;
-}
-
-.settings-item.column-layout {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.settings-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.settings-label {
-  font-weight: bold;
-  color: var(--text-main);
-}
-
-.settings-desc {
-  font-size: 13px;
-  color: #8b949e;
 }
 
 /* =========================================
@@ -555,3 +537,177 @@ button.btn-danger:hover { background: #f85149; }
 .toggle-switch input:checked + .slider { background-color: #2ea043; }
 .toggle-switch input:checked + .slider::before { transform: translateX(20px); }
 .toggle-label { font-weight: bold; }
+
+/* =========================================
+   14. TOGGLE SWITCHES (WIZARD VS SETTINGS)
+========================================= */
+
+/* --- A. Wizard Switch (Incl text) --- */
+label.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+  cursor: pointer;
+  width: 100%;
+}
+
+label.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+label.toggle-switch .slider {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  background-color: #30363d;
+  transition: .3s;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  flex-shrink: 0;
+}
+
+label.toggle-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  top: 50%;
+  margin-top: -8px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+label.toggle-switch input:checked + .slider {
+  background-color: #238636;
+  border-color: #2ea043;
+}
+
+label.toggle-switch input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+.toggle-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  user-select: none;
+}
+
+/* --- B. Pure Switch (Settings page) --- */
+.pure-switch {
+  position: relative;
+  display: block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.pure-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.pure-switch .slider {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #30363d;
+  transition: .3s;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  cursor: pointer;
+}
+
+.pure-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  top: 50%;
+  margin-top: -8px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+.pure-switch input:checked + .slider {
+  background-color: #238636;
+  border-color: #2ea043;
+}
+
+.pure-switch input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+
+/* =========================================
+   15. SETTINGS LIST LAYOUT
+========================================= */
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  padding: 15px 20px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.settings-item.column-layout {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 20px;
+}
+
+.settings-item.column-layout .settings-info {
+  padding-right: 0;
+}
+
+.settings-label {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 15px;
+}
+
+.settings-desc {
+  font-size: 13px;
+  color: #8b949e;
+  line-height: 1.4;
+}
+
+.settings-control {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.settings-control.auto-width {
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; 
+}
