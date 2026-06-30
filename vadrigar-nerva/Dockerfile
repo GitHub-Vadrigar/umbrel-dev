@@ -14,7 +14,7 @@ COPY app/ ./
 WORKDIR /app
 COPY api/server.js /app/server.js
 RUN npm init -y \
-  && npm install --omit=dev express cors urllib \
+  && npm install --omit=dev express cors digest-fetch \
   && npm cache clean --force
 
 # Downloader + supervisor script
