@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.3.9
+    image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.0-dev
     restart: unless-stopped
     volumes:
       - ${APP_DATA_DIR}:/app_root
@@ -10,7 +10,7 @@ services:
   nervad:
     user: "1000:1000"
     restart: unless-stopped
-    image: sn1f3rt/nerva:v0.2.3.0
+    image: sn1f3rt/nerva:v0.3.0.0
     depends_on:
       - web
     ports:
