@@ -2,7 +2,7 @@ manifestVersion: 1
 id: vadrigar-nerva
 name: Nerva Node
 tagline: Run your own Nerva node
-icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.4.0-dev1/vadrigar-nerva/img/logo-u.png
+icon: https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.4.0/vadrigar-nerva/img/logo-u.png
 category: crypto
 version: "0.4.0-rc1"
 port: 17578
@@ -35,9 +35,9 @@ submission: https://github.com/GitHub-Vadrigar/umbrel-apps
 repo: https://github.com/GitHub-Vadrigar/umbrel-apps
 support: https://github.com/GitHub-Vadrigar/umbrel-apps/issues
 gallery:
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.9/vadrigar-nerva/img/1.png
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.9/vadrigar-nerva/img/2.png
-  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.3.9/vadrigar-nerva/img/3.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.4.0/vadrigar-nerva/img/1.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.4.0/vadrigar-nerva/img/2.png
+  - https://raw.githubusercontent.com/GitHub-Vadrigar/umbrel-dev/refs/heads/0.4.0/vadrigar-nerva/img/3.png
 releaseNotes: >-
     Nerva Daemon updated to v0.3.0.0 Legacy Remade. This is a mandatory hard-fork release. Nerva activates hard fork 13 (CryptoNight-Adaptive v6) at block 4,320,000 (approximately 21 July 2026, ~19:00 UTC). All node operators, miners, exchanges, and services must upgrade before that block to stay on the network.
 dependencies: []
