@@ -58,5 +58,5 @@ if [ "${HIDE_PORT:-false}" = "true" ]; then
     DAEMON_ARGS="$DAEMON_ARGS --hide-my-port"
 fi
 
-echo "Launching nerva deamon..."
+echo "Launching nerva daemon..."
 exec nervad $DAEMON_ARGS
