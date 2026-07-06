@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.0-rc1
+    image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.0
     restart: unless-stopped
     volumes:
       - ${APP_DATA_DIR}:/app_root

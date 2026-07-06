@@ -32,4 +32,4 @@ jobs:
           context: ./vadrigar-nerva
           file: ./vadrigar-nerva/Dockerfile
           push: true
-          tags: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.0-rc1
+          tags: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.0
