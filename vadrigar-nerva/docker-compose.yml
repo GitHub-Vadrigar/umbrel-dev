@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.0
+    image: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.1-dev
     restart: unless-stopped
     volumes:
       - ${APP_DATA_DIR}:/app_root
@@ -8,6 +8,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   
   nervad:
+    container_name: nerva_daemon
     user: "1000:1000"
     restart: unless-stopped
     image: sn1f3rt/nerva:v0.3.0.0
@@ -22,5 +23,5 @@ services:
 
   app_proxy:
     environment:
-      APP_HOST: vadrigar-nerva_web_1
+      APP_HOST: web
       APP_PORT: 80

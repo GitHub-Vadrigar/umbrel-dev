@@ -10,7 +10,9 @@ app.use(express.json());
 
 const CONFIG_PATH = '/data/nerva/settings.conf';
 const DOCKER_SOCKET = '/var/run/docker.sock';
-const TARGET_CONTAINER = 'vadrigar-nerva_nervad_1';
+const TARGET_CONTAINER = 'nerva_daemon';
+
+let isRestarting = false;
 
 function restartContainer(containerName) {
     return new Promise((resolve, reject) => {
@@ -33,6 +35,20 @@ function restartContainer(containerName) {
         req.end();
     });
 }
+
+app.get('/api/status', (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    
+    const lockFile = '/data/nerva/.download_complete';
+    // De download is nog bezig als de lockfile mist
+    const downloadBusy = !fs.existsSync(lockFile);
+    
+    if (isRestarting || downloadBusy) {
+        return res.json({ status: 'busy' });
+    }
+    
+    res.json({ status: 'ready' });
+});
 
 // --- WIZARD ROUTES ---
 app.get('/api/setup-status', (req, res) => {
@@ -101,14 +117,37 @@ app.get('/api/settings', (req, res) => {
 });
 
 app.post('/api/settings', (req, res) => {
-    const body = req.body;
+    const body = req.body || {};
     let content = '';
 
-    for (const [key, value] of Object.entries(body)) {
-        content += `${key}="${value}"\n`;
+    const allowedSettings = {
+        USE_QUICKSYNC: (val) => val === 'true' || val === 'false',
+        PRIORITY_NODE: (val) => /^[a-zA-Z0-9\.\-:]*$/.test(val), 
+        EXCLUSIVE_NODE: (val) => /^[a-zA-Z0-9\.\-:]*$/.test(val),
+        LOG_LEVEL: (val) => /^[0-4]$/.test(val),
+        DISABLE_UPNP: (val) => val === 'true' || val === 'false',
+        NO_ANALYTICS: (val) => val === 'true' || val === 'false',
+        HIDE_PORT: (val) => val === 'true' || val === 'false'
+    };
+
+    for (const [key, validator] of Object.entries(allowedSettings)) {
+        if (body.hasOwnProperty(key)) {
+            const rawValue = String(body[key]).trim(); 
+            
+            if (validator(rawValue)) {
+                content += `${key}="${rawValue}"\n`;
+            } else {
+                console.warn(`[Security] Invalid value detected for ${key}:`, rawValue);
+                return res.status(400).json({ error: `Invalid configuration value for ${key}` });
+            }
+        }
     }
 
-    try {
+    if (content === '') {
+        return res.status(400).json({ error: "No valid settings provided." });
+    }
+
+	try {
         fs.writeFileSync(CONFIG_PATH, content, 'utf8');
 
         const lockFile = '/data/nerva/.download_complete';
@@ -116,24 +155,23 @@ app.post('/api/settings', (req, res) => {
             fs.unlinkSync(lockFile);
         }
 
-        res.sendStatus(200);
+        isRestarting = true; 
 
+        res.sendStatus(200);
         console.log("Triggering background sync process...");
         
         exec('sh /app/download.sh', (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Download script error: ${error.message}`);
-            }
-            if (stderr) {
-                console.error(`Download script stderr: ${stderr}`);
-            }
+            if (error) console.error(`Download script error: ${error.message}`);
+            if (stderr) console.error(`Download script stderr: ${stderr}`);
             
             console.log("Download process finished. Restarting Nervad daemon...");
             
             restartContainer(TARGET_CONTAINER).then(() => {
                 console.log(`${TARGET_CONTAINER} restarted successfully.`);
+                isRestarting = false; 
             }).catch(err => {
                 console.error(`Failed to restart ${TARGET_CONTAINER}:`, err.message);
+                isRestarting = false; 
             });
         });
 

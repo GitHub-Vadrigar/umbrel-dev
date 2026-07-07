@@ -16,6 +16,7 @@ if [ ! -f "$SETTINGS_FILE" ]; then
 	echo 'EXCLUSIVE_NODE=""' >> "$SETTINGS_FILE"
 	echo 'LOG_LEVEL="0"' >> "$SETTINGS_FILE"
 	echo 'DISABLE_UPNP="false"' > "$SETTINGS_FILE"
+	echo 'NO_ANALYTICS="false"' > "$SETTINGS_FILE"    
 	echo 'HIDE_PORT="false"' > "$SETTINGS_FILE"
 fi
 

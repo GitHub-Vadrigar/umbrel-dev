@@ -608,18 +608,42 @@ async function saveAndRestart() {
     document.getElementById("statusBadge").className = "status-badge status-offline";
     document.getElementById("eta").innerText = "Node is restarting...";
     
-    // Optional: Auto-reload the page after 15 seconds so UI is fresh after containers reboot
-    setTimeout(() => {
-      window.location.reload();
-    }, 15000);
+	pollForRestart();
     
   } catch (e) {
     alert("Failed to save and restart. Please check the logs.");
-    loadNodeSettings(); // Revert UI visually on failure
+    loadNodeSettings();
   } finally {
     btn.innerText = originalText;
     btn.disabled = false;
   }
+}
+
+function pollForRestart() {
+    const etaEl = document.getElementById("eta");
+    if (etaEl) {
+        etaEl.innerText = "Applying settings... If QuickSync is downloading, this may take a few minutes.";
+    }
+
+    setTimeout(async () => {
+        try {
+            const res = await fetch("/api/status?t=" + Date.now());
+            if (res.ok) {
+                const data = await res.json();
+                
+                if (data.status === 'ready') {
+                    if (etaEl) etaEl.innerText = "Daemon is starting. Reloading interface...";
+                    setTimeout(() => window.location.reload(), 3000);
+                    return;
+                }
+            }
+        } catch (e) {
+            console.log("Waiting for backend to respond...");
+        }
+        
+        pollForRestart();
+        
+    }, 4000);
 }
 
 initializeSettings();
