@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - '0.4.0' 
+      - '0.4.1-dev' 
     paths:
       - 'vadrigar-nerva/**'
 
@@ -32,4 +32,4 @@ jobs:
           context: ./vadrigar-nerva
           file: ./vadrigar-nerva/Dockerfile
           push: true
-          tags: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.0
+          tags: ghcr.io/github-vadrigar/vadrigar-nerva-web:0.4.1-dev
