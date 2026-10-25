@@ -1,5 +1,5 @@
 # Base image
-FROM node:26.4-alpine
+FROM node:26.12-alpine
 
 RUN apk add --no-cache nginx gnupg unzip wget coreutils
 
